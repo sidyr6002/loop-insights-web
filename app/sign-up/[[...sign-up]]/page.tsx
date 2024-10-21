@@ -18,13 +18,13 @@ import { cn } from "@/lib/utils";
 
 export default function SignUpPage() {
     return (
-        <div className="min-h-svh grid w-full grow items-center px-4 sm:justify-center bg-foreground">
+        <div className="min-h-svh grid w-full grow items-center px-4 sm:justify-center bg-zinc-50">
             <SignUp.Root>
                 <Clerk.Loading>
                     {(isGlobalLoading) => (
                         <>
                             <SignUp.Step name="start">
-                                <Card className="w-full sm:w-96 px-2 py-4 rounded-3xl shadow-lg shadow-blue-500/40">
+                            <Card className="w-full sm:w-96 px-2 py-4 rounded-3xl border-none bg-transparent shadow-lg shadow-zinc-300/65">
                                     <CardHeader>
                                         <CardTitle>
                                             Create your account
@@ -127,7 +127,7 @@ export default function SignUpPage() {
                                     <CardContent className="grid gap-y-4">
                                         <Clerk.Field name="username" className="space-y-2">
                                             <Clerk.Label>
-                                                <Label className="text-xs font-bold uppercase text-neutral-500/85">Username</Label>
+                                                <Label className="text-xs font-bold text-neutral-500/85">Username</Label>
                                             </Clerk.Label>
                                             <Clerk.Input type="text" required asChild>
                                                 <Input className="focus-visible:ring-blue-500 focus-visible:ring-offset-0 rounded-full shadow-inner shadow-black/20"/>
@@ -136,7 +136,7 @@ export default function SignUpPage() {
                                         </Clerk.Field>
                                         <Clerk.Field name="firstName" className="space-y-2">
                                             <Clerk.Label>
-                                                <Label className="text-xs font-bold uppercase text-neutral-500/85">First Name</Label>
+                                                <Label className="text-xs font-bold text-neutral-500/85">First Name</Label>
                                             </Clerk.Label>
                                             <Clerk.Input type="text" required asChild>
                                                 <Input className="focus-visible:ring-blue-500 focus-visible:ring-offset-0 rounded-full shadow-inner shadow-black/20"/>
@@ -145,7 +145,7 @@ export default function SignUpPage() {
                                         </Clerk.Field>
                                         <Clerk.Field name="lastName" className="space-y-2">
                                             <Clerk.Label>
-                                                <Label className="text-xs font-bold uppercase text-neutral-500/85">Last Name</Label>
+                                                <Label className="text-xs font-bold text-neutral-500/85">Last Name</Label>
                                             </Clerk.Label>
                                             <Clerk.Input type="text" required asChild>
                                                 <Input className="focus-visible:ring-blue-500 focus-visible:ring-offset-0 rounded-full shadow-inner shadow-black/20"/>

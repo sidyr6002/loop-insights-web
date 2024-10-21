@@ -19,13 +19,13 @@ import { cn } from "@/lib/utils";
 
 export default function SignInPage() {
     return (
-        <div className="min-h-svh grid w-full grow items-center px-4 sm:justify-center bg-foreground">
+        <div className="min-h-svh grid w-full grow items-center px-4 sm:justify-center bg-zinc-50">
             <SignIn.Root>
                 <Clerk.Loading>
                     {(isGlobalLoading) => (
                         <>
                             <SignIn.Step name="start">
-                                <Card className="w-full sm:w-96 px-2 py-4 rounded-3xl shadow-lg shadow-blue-500/40">
+                                <Card className="w-full sm:w-96 px-2 py-4 rounded-3xl border-none bg-transparent shadow-lg shadow-zinc-300/65">
                                     <CardHeader className="mb-4 text-center">
                                         <CardTitle>
                                             Sign in to Loop Insights
