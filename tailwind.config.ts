@@ -61,9 +61,15 @@ const config: Config = {
                     "0%,70%,100%": { opacity: "1" },
                     "20%,50%": { opacity: "0" },
                 },
+                "tilt-shaking": {
+                    "0%, 50%, 100%": { transform: "rotate(0deg)" },
+                    " 25%": { transform: "rotate(5deg)" },
+                    "75%": { transform: "rotate(-5deg)" },
+                },
             },
             animation: {
                 "caret-blink": "caret-blink 1.25s ease-out infinite",
+                "tilt": "tilt-shaking 0.25s ease-out infinite",
             },
         },
     },
