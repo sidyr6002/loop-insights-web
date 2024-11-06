@@ -34,10 +34,9 @@ export default function SignInPage() {
                                             Welcome back! Please sign in to continue
                                         </CardDescription>
                                     </CardHeader>
-                                    <CardContent className="grid gap-y-4">
-                                        <div className="grid grid-cols-2 gap-x-4">
+                                    <CardContent>
                                             <Clerk.Connection name="github" asChild >
-                                                <Button size="sm" variant="outline" type="button" disabled={isGlobalLoading} className="rounded-full border border-blue-700 bg-zinc-50 hover:bg-blue-700/90 text-blue-700 hover:text-zinc-50 shadow-md shadow-blue-400/60 transition" >
+                                                <Button size="sm" variant="outline" type="button" disabled={isGlobalLoading} className="rounded-full w-full text-base py-5 border border-blue-700 bg-blue-700 text-zinc-100 hover:bg-zinc-100 hover:text-blue-700 transition" >
                                                     <Clerk.Loading scope="provider:github">
                                                         {(isLoading) =>
                                                             isLoading ? (
@@ -45,60 +44,16 @@ export default function SignInPage() {
                                                             ) : (
                                                                 <>
                                                                     <Icons.gitHub className="mr-2 size-4" />
-                                                                    GitHub
+                                                                    Github
                                                                 </>
                                                             )
                                                         }
                                                     </Clerk.Loading>
                                                 </Button>
                                             </Clerk.Connection>
-                                            <Clerk.Connection name="google" asChild >
-                                                <Button size="sm" variant="outline" type="button" disabled={isGlobalLoading} className="rounded-full border border-blue-700 bg-zinc-50 hover:bg-blue-700/90 text-blue-700 hover:text-zinc-50 shadow-md shadow-blue-400/60 transition" >
-                                                    <Clerk.Loading scope="provider:google">
-                                                        {(isLoading) =>
-                                                            isLoading ? (
-                                                                <Icons.spinner className="size-4 animate-spin" />
-                                                            ) : (
-                                                                <>
-                                                                    <Icons.google className="mr-2 size-4" />
-                                                                    Google
-                                                                </>
-                                                            )
-                                                        }
-                                                    </Clerk.Loading>
-                                                </Button>
-                                            </Clerk.Connection>
-                                        </div>
-                                        <p className="flex items-center gap-x-3 text-sm font-medium text-muted-foreground before:h-px before:flex-1 before:bg-border after:h-px after:flex-1 after:bg-border">
-                                            or
-                                        </p>
-                                        <Clerk.Field name="identifier" className="space-y-2"
-                                        >
-                                            <Clerk.Label asChild>
-                                                <Label>Email address</Label>
-                                            </Clerk.Label>
-                                            <Clerk.Input type="email" required asChild>
-                                                <Input className="focus-visible:ring-blue-500 focus-visible:ring-offset-0 rounded-full shadow-inner shadow-black/20" />
-                                            </Clerk.Input>
-                                            <Clerk.FieldError className="block text-sm text-destructive" />
-                                        </Clerk.Field>
                                     </CardContent>
                                     <CardFooter>
                                         <div className="grid w-full gap-y-4">
-                                            <SignIn.Action submit asChild>
-                                                <Button disabled={isGlobalLoading} className="rounded-full bg-blue-700 hover:bg-blue-700/80 text-zinc-100 hover:text-zinc-50">
-                                                    <Clerk.Loading>
-                                                        {(isLoading) => {
-                                                            return isLoading ? (
-                                                                <Icons.spinner className="size-4 animate-spin" />
-                                                            ) : (
-                                                                "Sign In"
-                                                            );
-                                                        }}
-                                                    </Clerk.Loading>
-                                                </Button>
-                                            </SignIn.Action>
-
                                             <Button
                                                 variant="link"
                                                 size="sm"
