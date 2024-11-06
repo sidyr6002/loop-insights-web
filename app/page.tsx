@@ -1,7 +1,13 @@
-import { redirect } from "next/navigation"
+import { currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
-function Home() {
-  return redirect('/home')
+async function Home() {
+    const user = await currentUser();
+
+    if (user) {
+        return redirect("/dashboard");
+    }
+    return redirect("/home");
 }
 
-export default Home
+export default Home;

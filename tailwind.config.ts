@@ -9,6 +9,9 @@ const config: Config = {
     ],
     theme: {
         extend: {
+            fontFamily: {
+                righteous: ["var(--font-righteous)"]
+            },
             colors: {
                 background: "hsl(var(--background))",
                 foreground: "hsl(var(--foreground))",

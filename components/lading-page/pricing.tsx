@@ -68,11 +68,11 @@ const PricingSection = () => {
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8">
+            <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
                 {plans.map((plan, index) => (
                     <Card
                         key={plan.name}
-                        className="bg-gray-50 rounded-2xl overflow-hidden"
+                        className="bg-gray-50 rounded-2xl overflow-hidden shadow-md shadow-neutral-400/40"
                     >
                         <CardHeader className="p-5 lg:p-6 relative">
                             <h3 className="text-mid lg:text-lg xl:text-xl font-semibold text-zinc-700">
@@ -108,7 +108,7 @@ const PricingSection = () => {
                         </CardContent>
 
                         <CardFooter className="p-5 lg:p-6">
-                            <button className="w-full py-2 px-4 text-sm lg:text-md bg-zinc-800 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors duration-200">
+                            <button className="w-full border-none py-2 px-4 text-sm lg:text-md bg-zinc-800 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors duration-200">
                                 Get Started
                             </button>
                         </CardFooter>

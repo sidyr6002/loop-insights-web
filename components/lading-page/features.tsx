@@ -47,8 +47,8 @@ function Features() {
         </div>
         <div className='w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
             {featuresInfo.map((feature, index) => (
-                <div key={index} className='span-col-1 flex flex-col items-center gap-y-2 sm:gap-y-6 sm:bg-gray-50 p-6 sm:p-8 sm:rounded-2xl sm:shadow-md sm:shadow-neutral-400/40 group'>
-                    <feature.icon className='w-7 h-7 lg:w-8 lg:h-8 xl:w-9 xl:h-9 fill-blue-600 hover:fill-zinc-800 lg:group-hover:animate-tilt lg:transition-transform lg:duration-500'/>
+                <div key={index} className='span-col-1 flex flex-col items-center gap-y-2 sm:gap-y-6 sm:bg-gray-50 p-6 sm:p-8 cursor-pointer sm:rounded-2xl sm:shadow-md sm:shadow-neutral-400/40 sm:hover:bg-transparent sm:hover:shadow-none transition ease-out group'>
+                    <feature.icon className='w-7 h-7 lg:w-8 lg:h-8 xl:w-9 xl:h-9 fill-blue-600 lg:group-hover:animate-tilt lg:transition-transform lg:duration-500'/>
                     <div className='text-center space-y-6'>
                         <h4 className='text-sm lg:text-md xl:text-lg font-semibold text-zinc-700'>{feature.title}</h4>
                         <p className='text-xs lg:text-sm xl:text-md max-w-xs text-zinc-500'>{feature.description}</p>
