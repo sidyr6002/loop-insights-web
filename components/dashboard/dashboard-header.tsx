@@ -1,7 +1,6 @@
-import React, { lazy, memo, Suspense } from "react";
+import React, { memo } from "react";
 import { PieChart } from "lucide-react";
-import dynamic from "next/dynamic";
-import CreateProjectButton from "../project/create-project";
+import CreateProjectButton from "./create-project";
 
 const DashboardHeader = () => {
     return (

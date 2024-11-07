@@ -1,17 +1,10 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import {
-    SignedIn,
-    SignedOut,
-    SignInButton,
-    UserButton,
-    useSession,
-} from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import React, { memo, useEffect, useMemo, useState } from "react";
+import { SignInButton, UserButton, useSession } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { AlignJustify, Home, LogIn } from "lucide-react";
+import { AlignJustify, LogIn } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 // Custom hook for scroll handling with throttle
@@ -20,7 +13,7 @@ const useScrollPosition = () => {
 
     useEffect(() => {
         const updatePosition = () => {
-            setIsScrolled(window.scrollY > 100); // Simple threshold
+            setIsScrolled(window.scrollY > 100);
         };
 
         window.addEventListener("scroll", updatePosition, { passive: true });
@@ -32,7 +25,7 @@ const useScrollPosition = () => {
     return isScrolled;
 };
 
-const UserAuthSection = React.memo(
+const UserAuthSection = memo(
     ({
         isLoaded,
         isSignedIn,
@@ -66,7 +59,7 @@ const UserAuthSection = React.memo(
     }
 );
 
-const MobileHeader = React.memo(() => (
+const MobileHeader = memo(() => (
     <div className="flex lg:hidden mx-2 mt-3 sm:mx-4 md:mx-6 px-4 sm:px-6 md:px-9 py-3 gap-4 rounded-full bg-zinc-300/90 backdrop-blur-sm relative">
         <AlignJustify className="w-6 h-6 font-semibold" />
         <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -117,4 +110,4 @@ const HomeHeader: React.FC = () => {
     );
 };
 
-export default React.memo(HomeHeader);
+export default memo(HomeHeader);

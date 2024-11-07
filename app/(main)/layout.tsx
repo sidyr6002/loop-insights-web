@@ -5,16 +5,16 @@ import createInitialUser from "@/lib/createInitialUser";
 import Header from "@/components/header";
 
 const MainLayout = async ({ children }: { children: React.ReactNode }) => {
-    // const user = await createInitialUser();
+    const user = await createInitialUser();
 
-    // if (!user) {
-    //     return redirect("/sign-in");
-    // }
+    if (!user) {
+        return redirect("/sign-in");
+    }
 
     return (
-        <main className="min-h-screen container mx-auto flex flex-col">
+        <main className="min-h-screen container flex flex-col mx-auto">
             <Header type="main" />
-            <div className="flex-grow px-4 sm:px-6 lg:px-12 mt-6 lg:mt-16">
+            <div className="flex-grow flex flex-col px-4 sm:px-6 lg:px-12 my-6 lg:my-16">
                 {children}
             </div>
         </main>
