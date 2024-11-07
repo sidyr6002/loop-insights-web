@@ -23,7 +23,7 @@ const ProjectsSection = () => {
             const projects = await getAllProjects();
             return projects;
         },
-        refetchInterval: 3000,
+        //refetchInterval: 3000,
     })
 
     if (isLoading) {
