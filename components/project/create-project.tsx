@@ -31,11 +31,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 import { Loader2, Plus } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 
 const CreateProjectButton = () => {
     const router = useRouter();
+    const [dialogOpen, setDialogOpen] = React.useState(false);
     const [creatingProject, setCreatingProject] = React.useState(false);
+    const queryClient = useQueryClient();
 
     // console.log("User", user);
 
@@ -48,33 +51,33 @@ const CreateProjectButton = () => {
         },
     });
 
-    const onSubmit = async (values: z.infer<typeof projectSchema>) => {
-        setCreatingProject(true);
-
-        try {
-            const result = await addProject(values);
-
-            if (result.error) {
-                console.error(result.error);
-            }
-
-            const project = result.data;
-
-            if (!project) {
-                throw new Error("Something went wrong in creating project.");
-            }
+    const addProjectMutation = useMutation({
+        mutationFn: addProject,
+        onSuccess: (data) => {
+            //console.log("[CreateProjectButton] Success: ", data);
+            queryClient.invalidateQueries({ queryKey: ["projects"], exact: true });
 
             setCreatingProject(false);
-            form.reset();
-            router.push(`/projects/${project.id}/instructions`);
-        }
-        catch (error) {
+            setDialogOpen(false);
+        },
+        onError: (error) => {
             console.error("[CreateProjectButton] Error: ", error);
-        }
+
+            setCreatingProject(false);
+        },
+        onSettled: () => {
+            form.reset();
+            router.refresh();
+        },
+    })
+
+    const onSubmit = async (values: z.infer<typeof projectSchema>) => {
+        setCreatingProject(true);
+        addProjectMutation.mutate(values);
     }
 
     return (
-        <Dialog>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
                 <Button
                     size="sm"

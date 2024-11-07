@@ -28,16 +28,10 @@ export async function addProject(project: z.infer<typeof projectSchema>) {
             throw new Error("Project creation failed.");
         }
 
-        return { data: newProject };
+        return newProject;
     } catch (error) {
         console.error("[addProject] Error: ", error);
 
-        if (error instanceof Error) {
-            return { error: error.message };
-        }
-
-        return {
-            error: "Something went wrong. Please try again later.",
-        };
+        return null;
     }
 }
