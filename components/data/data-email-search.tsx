@@ -13,9 +13,7 @@ const DataEmailSearch = <TData,>({ table }: DataEmailSearchProps<TData>) => {
     const debouncedEmailFilter = useDebounce(emailSearch, 500);
 
     useEffect(() => {
-        if (debouncedEmailFilter !== "") {
-            table.getColumn("userEmail")?.setFilterValue(debouncedEmailFilter);
-        }
+        table.getColumn("userEmail")?.setFilterValue(debouncedEmailFilter);
     }, [debouncedEmailFilter, table]);
 
     return (
