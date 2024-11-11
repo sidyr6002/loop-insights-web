@@ -12,7 +12,7 @@ const ProjectInstructionsPage = () => {
     const { projectId } = useParams();
 
     return (
-        <div className="w-full max-w-6xl mx-auto px-2 sm:px-4 pb-8">
+        <div className="w-full my-16 max-w-6xl mx-auto px-2 sm:px-4 pb-8">
             {/* Title Section with gradient background */}
             <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-indigo-500 p-8 mb-8">
                 <div className="relative z-10">

@@ -1,42 +1,40 @@
-import React from "react";
+import React, { memo } from "react";
 import Link from "next/link";
 
 import TooltipWrapper from "@/components/tooltip-wrapper";
 
-import { Globe } from "lucide-react";
+import { ChevronLeft, Globe } from "lucide-react";
 
 interface ProjectHeaderProps {
     projectTitle: string;
-    projectDescription: string;
+    projectURL: string;
 }
 
-const ProjectHeader: React.FC<ProjectHeaderProps> = ({projectTitle, projectDescription}) => {
+const ProjectHeader: React.FC<ProjectHeaderProps> = ({projectTitle, projectURL}) => {
     return (
         <header
             role="banner"
             aria-label="Project Header"
-            className="p-4 md:p-6 lg:p-8 flex flex-col sm:flex-row sm:items-start gap-2 rounded-2xl"
+            className="p-3 md:p-4 lg:p-6 flex flex-col sm:flex-row sm:items-start gap-2 rounded-2xl"
         >
-            <div className="w-full flex flex-col space-y-3">
+            <div className="w-full flex flex-col space-y-6">
+                <Link href="/dashboard" className="flex items-center gap-1 text-blue-700"><ChevronLeft className="w-4 h-4" /> Back to Dashboard</Link>
                 <div className="flex justify-between items-center space-x-3">
                     <h2 className="text-xl md:text-2xl lg:text-3xl 2xl:text-4xl font-bold text-zinc-900">
                         {projectTitle}
                     </h2>
                     <TooltipWrapper content="Visit the Site">
                         <Link
-                            href="/projects"
+                            href={projectURL}
                             className="p-1 lg:p-1.5 flex items-center gap-2 rounded-full text-zinc-100 bg-blue-700"
                         >
                             <Globe className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6" />
                         </Link>
                     </TooltipWrapper>
                 </div>
-                <p className="text-sm lg:text-base text-zinc-500 max-w-2xl">
-                    {projectDescription}
-                </p>
             </div>
         </header>
     );
 };
 
-export default ProjectHeader;
+export default memo(ProjectHeader);

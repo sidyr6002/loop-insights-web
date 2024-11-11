@@ -14,6 +14,15 @@ import { Feedback } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowDown, ArrowUp, MoreHorizontal } from "lucide-react"
 
+
+export const keyNameMap: Record<string, string> = {
+    userName: "Name",
+    userEmail: "Email",
+    rating: "Rating",
+    feedback: "Feedback",
+    createdAt: "Date",
+}
+
 export const feedbackColumns: ColumnDef<Partial<Feedback>>[] = [
     {
         accessorKey: "userName",
@@ -24,7 +33,7 @@ export const feedbackColumns: ColumnDef<Partial<Feedback>>[] = [
         header: ({ column }) => {
             return (
                 <div className="flex justify-between items-center transition duration-200 ease-in-out">
-                    Email
+                    {keyNameMap[column.id]}
                     <div className="w-2" />
                     <span
                         className="text-zinc-100 cursor-pointer hover:text-zinc-100 hover:scale-110 hover:bg-transparent transition duration-150"
@@ -47,7 +56,7 @@ export const feedbackColumns: ColumnDef<Partial<Feedback>>[] = [
         header: ({ column }) => {
             return (
                 <div className="flex justify-between items-center transition duration-200 ease-in-out">
-                    Rating
+                    {keyNameMap[column.id]}
                     <div className="w-2" />
                     <span
                         className="text-zinc-100 cursor-pointer hover:text-zinc-100 hover:scale-110 hover:bg-transparent transition duration-150"
@@ -67,11 +76,12 @@ export const feedbackColumns: ColumnDef<Partial<Feedback>>[] = [
     },
     {
         accessorKey: "feedback",
-        header: "Feedback",
+        header: ({ column }) => <div>{keyNameMap[column.id]}</div>
+        ,
     },
     {
         accessorKey: "createdAt",
-        header: () => <div>Date</div>,
+        header: ({column}) => <div>{keyNameMap[column.id]}</div>,
         cell: ({ row }) => {
             const date = new Date(row.getValue("createdAt")).toLocaleDateString("en-US", {
                 year: "numeric",
@@ -79,7 +89,7 @@ export const feedbackColumns: ColumnDef<Partial<Feedback>>[] = [
                 day: "numeric",
               });
 
-            return <div className="text-right">{date}</div>;
+            return <div className="text-left">{date}</div>;
         }
     },
    
