@@ -41,6 +41,15 @@ const DataDateRangeFilter = <TData, TValue>({column, table}: DataDateRangeFilter
             
             column.setFilterValue(newFilter);
             console.log("[DataDateRangeFilter] newFilter: ", newFilter);
+        } else {
+            const currentFilter = column.getFilterValue() as [Date?, Date?] || [undefined, undefined];
+            const newFilter: [Date?, Date?] =
+              type === "start"
+                ? [undefined, currentFilter[1]]
+                : [currentFilter[0], undefined];
+      
+            column.setFilterValue(newFilter); // Remove the filter value for deselected date
+            console.log("[DataDateRangeFilter] clearedFilter: ", newFilter);
         }
     };
 

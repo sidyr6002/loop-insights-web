@@ -40,6 +40,34 @@ import { Button } from "../ui/button";
 import { keyNameMap } from "../project/feedbacks/columns";
 import DataVisibilityFilter from "./data-visibiity-filter";
 import DataDateRangeFilter from "./data-date-range-filter";
+import { Loader2 } from "lucide-react";
+
+
+const LoadingOverlay = ({ visible }: { visible: boolean }) => {
+    return (
+      <div 
+        className={cn(
+          "absolute inset-0 rounded-xl",
+          "flex items-center justify-center",
+          "transition-all duration-300 ease-in-out",
+          visible ? "opacity-100 z-50" : "opacity-0 -z-10",
+        )}
+      >
+        <div className={cn(
+          "flex items-center gap-3 px-5 py-4",
+          "bg-white rounded-lg shadow-lg",
+          "border border-gray-100",
+          "transform transition-all",
+          visible ? "scale-100" : "scale-95",
+        )}>
+          <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
+          <span className="text-sm font-medium text-gray-700">
+            Loading...
+          </span>
+        </div>
+      </div>
+    );
+  };
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -51,6 +79,7 @@ interface DataTableProps<TData, TValue> {
     onSortingChange: OnChangeFn<SortingState>;
     columnFilters: ColumnFiltersState;
     onColumnFiltersChange: OnChangeFn<ColumnFiltersState>;
+    isLoading: boolean;
 }
 
 const DataTable = <TData, TValue>({
@@ -63,6 +92,7 @@ const DataTable = <TData, TValue>({
     onSortingChange,
     columnFilters,
     onColumnFiltersChange,
+    isLoading,
 }: DataTableProps<TData, TValue>) => {
     const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
 
@@ -89,6 +119,8 @@ const DataTable = <TData, TValue>({
         manualFiltering: true,
     });
 
+    console.log("[DataTable] isLoading: ", isLoading);
+
     return (
         <div className="px-2 sm:px-4">
             <div className="flex justify-end pb-4">
@@ -98,7 +130,8 @@ const DataTable = <TData, TValue>({
                 <DataEmailSearch table={table} />
                 <DataVisibilityFilter table={table} />
             </div>
-            <div className="rounded-xl border">
+            <div className="rounded-xl border relative">
+                <LoadingOverlay visible={isLoading} />
                 <Table className="border-separate bg-zinc-300">
                     <TableHeader className="border-separate">
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -154,7 +187,11 @@ const DataTable = <TData, TValue>({
                                     colSpan={columns.length}
                                     className="h-24 text-center"
                                 >
-                                    No results.
+                                    {isLoading ? (
+                                        <p>Loading...</p>
+                                    ) : (
+                                        <p>No results.</p>
+                                    )}
                                 </TableCell>
                             </TableRow>
                         )}
