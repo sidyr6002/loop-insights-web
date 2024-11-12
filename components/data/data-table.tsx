@@ -187,11 +187,7 @@ const DataTable = <TData, TValue>({
                                     colSpan={columns.length}
                                     className="h-24 text-center"
                                 >
-                                    {isLoading ? (
-                                        <p>Loading...</p>
-                                    ) : (
-                                        <p>No results.</p>
-                                    )}
+                                    No results.
                                 </TableCell>
                             </TableRow>
                         )}

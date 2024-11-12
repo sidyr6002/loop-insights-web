@@ -8,6 +8,14 @@ import CopyButton from "@/components/copy-button";
 
 import { BookOpen, Code, Palette } from "lucide-react";
 
+const scripts = {
+    react: "<Feedback projectId={YOUR_PROJECT_ID} label={YOUR_LABEL} />",
+    hmtl: {
+        element: `<feedback-element projectId={YOUR_PROJECT_ID} label={YOUR_LABEL} />`,
+        umd: `<script src="${process.env.NEXT_PUBLIC_FEEDBACK_URL}/feedback.umd.js"></script>`,
+    },
+}
+
 const ProjectInstructionsPage = () => {
     const { projectId } = useParams();
 
@@ -70,9 +78,9 @@ const ProjectInstructionsPage = () => {
                                     </h5>
                                     <div className="flex-grow flex justify-between items-center gap-2 bg-gray-50 p-4 pr-3 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
                                         <code className="inset-0 text-blue-600 font-mono text-sm">
-                                            {"<Feedback />"}
+                                            {scripts.react}
                                         </code>
-                                        <CopyButton text={"<Feedback />"} />
+                                        <CopyButton text={scripts.react} />
                                     </div>
                                 </div>
 
@@ -83,10 +91,12 @@ const ProjectInstructionsPage = () => {
                                     </h5>
                                     <div className="flex-grow flex justify-between items-center gap-2 bg-gray-50 p-4 pr-3 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
                                         <code className=" text-blue-600 font-mono text-sm break-all">
-                                            {`<script src="${process.env.NEXT_PUBLIC_FEEDBACK_URL}/feedback.umd.js"></script>`}
+                                            {scripts.hmtl.element}
+                                            <br />
+                                            {scripts.hmtl.umd}
                                         </code>
                                         <CopyButton
-                                            text={`<script src="${process.env.NEXT_PUBLIC_FEEDBACK_URL}/feedback.umd.js"></script>`}
+                                            text={scripts.hmtl.element + "\n" + scripts.hmtl.umd}
                                         />
                                     </div>
                                 </div>
