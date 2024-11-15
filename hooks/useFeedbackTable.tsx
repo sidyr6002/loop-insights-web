@@ -94,8 +94,9 @@ export const useFeedbackTable = ({
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(initialFilters);
     
     // Reset state
-    const [resetPage, setResetPage] = useState(false);
     const isMounted = useRef(false);
+
+    // console.log("Filters: ", columnFilters);
 
     // Memoized debounced fetch function
     const debouncedFetch = useCallback(
@@ -200,15 +201,11 @@ export const useFeedbackTable = ({
     }, [projectId, paginationState.pageSize, columnFilters, fetchPages]);
 
     useEffect(() => {
-        if (
-            !resetPage &&
-            Object.keys(columnFilters).length > 0 &&
-            paginationState.pageIndex > 0
-        ) {
+        if ( Object.keys(columnFilters).length > 0 && paginationState.pageIndex > 0 ) {
             setPaginationState((prev) => ({ ...prev, pageIndex: 0 }));
-            setResetPage(false);
         }
-    }, [columnFilters, paginationState.pageIndex, resetPage]);
+    }, [columnFilters]);
+
 
     return {
         feedbackData,
