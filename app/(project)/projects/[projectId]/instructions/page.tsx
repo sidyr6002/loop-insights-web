@@ -11,7 +11,7 @@ import { BookOpen, Code, Palette } from "lucide-react";
 const scripts = {
     react: "<Feedback projectId={YOUR_PROJECT_ID} label={YOUR_LABEL} />",
     hmtl: {
-        element: `<feedback-element projectId={YOUR_PROJECT_ID} label={YOUR_LABEL} />`,
+        element: `<feedback-element project-id={YOUR_PROJECT_ID} label={YOUR_LABEL}></feedback-element>`,
         umd: `<script src="${process.env.NEXT_PUBLIC_FEEDBACK_URL}/feedback.umd.js"></script>`,
     },
 }

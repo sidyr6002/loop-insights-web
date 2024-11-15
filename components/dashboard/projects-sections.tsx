@@ -23,7 +23,6 @@ const ProjectsSection = () => {
         data: projects,
         isLoading,
         isError,
-        error,
     } = useQuery<Project[] | null>({
         queryKey: ["projects"],
         queryFn: async () => {

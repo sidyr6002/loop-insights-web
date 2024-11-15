@@ -1,13 +1,20 @@
 import React from "react";
-import { Check, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+
 import {
     Card,
     CardContent,
     CardFooter,
     CardHeader,
 } from "@/components/ui/card";
+import SubscriptionButton from "@/components/subscription-button";
+
+import { X } from "lucide-react";
 import { FaCheckCircle } from "react-icons/fa";
-import { cn } from "@/lib/utils";
+
+if (!process.env.STRIPE_MONTHLY_PRICE_ID || !process.env.STRIPE_YEARLY_PRICE_ID) {
+    throw new Error("Missing Stripe price IDs");
+}
 
 const plans = [
     {
@@ -27,6 +34,7 @@ const plans = [
         price: 6.99,
         period: "/month",
         description: "For growing teams and organizations",
+        priceId: process.env.STRIPE_MONTHLY_PRICE_ID,
         features: [
             { name: "Complete documentation", included: true },
             { name: "5GB Cloud storage", included: true },
@@ -39,6 +47,7 @@ const plans = [
         price: 39.99,
         period: "/year",
         description: "Upgrade to save more!",
+        priceId: process.env.STRIPE_YEARLY_PRICE_ID,
         features: [
             { name: "Complete documentation", included: true },
             { name: "50GB Cloud storage", included: true },
@@ -48,7 +57,7 @@ const plans = [
     },
 ];
 
-const PricingSection = () => {
+const PricingSection = async() => {
     return (
         <div className="my-36 space-y-16">
             <div className="text-center mb-16 space-y-6">
@@ -108,9 +117,7 @@ const PricingSection = () => {
                         </CardContent>
 
                         <CardFooter className="p-5 lg:p-6">
-                            <button className="w-full border-none py-2 px-4 text-sm lg:text-md bg-zinc-800 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors duration-200">
-                                Get Started
-                            </button>
+                            <SubscriptionButton priceId={plan.priceId} />
                         </CardFooter>
                     </Card>
                 ))}
