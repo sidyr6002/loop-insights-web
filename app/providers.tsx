@@ -1,16 +1,43 @@
 "use client";
 
 import React from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+    isServer,
+    QueryClient,
+    QueryClientProvider,
+} from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ClerkProvider } from "@clerk/nextjs";
 
-const queryClient = new QueryClient();
+function makeQueryClient() {
+    return new QueryClient({
+        defaultOptions: {
+            queries: {
+                staleTime: 60 * 1000,
+            },
+        },
+    });
+}
+
+let browserQueryClient: QueryClient | undefined = undefined;
+
+function getQueryClient() {
+    if (isServer) {
+        return makeQueryClient();
+    } else {
+        if (!browserQueryClient) browserQueryClient = makeQueryClient();
+        return browserQueryClient;
+    }
+}
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
+    const queryClient = getQueryClient();
+
     return (
         <QueryClientProvider client={queryClient}>
-            <ClerkProvider afterSignOutUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/home`}>
+            <ClerkProvider
+                afterSignOutUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/home`}
+            >
                 {children}
                 {/* <ReactQueryDevtools initialIsOpen={false} /> */}
             </ClerkProvider>

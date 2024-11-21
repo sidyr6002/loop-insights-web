@@ -66,12 +66,9 @@ export async function getStripeSubscriptionData ( { subscriptionId }: { subscrip
             throw new Error("User not found or not logged in.");
         }
 
-        console.log("[getStripeSubscriptionData] subscriptionId: ", subscriptionId);
-
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
-        const plainSubscription = JSON.parse(JSON.stringify(subscription)) as Stripe.Subscription;
 
-        return { subscription: plainSubscription };
+        return { subscription: structuredClone(subscription) as Stripe.Subscription  };
     } catch (error) {
         console.error("[getStripeSubscriptionData] Error: ", error);
 
@@ -80,23 +77,76 @@ export async function getStripeSubscriptionData ( { subscriptionId }: { subscrip
 
 }
 
+export async function pauseSubscription({ subscriptionId, resumeAt }: { subscriptionId: string, resumeAt: Date }) {
+	try {
+		const user = await currentUser();
+
+		if (!user) {
+			throw new Error("User not authenticated.");
+		}
+
+		const existingUser = await prisma.user.findUnique({
+			where: {
+				email: user.emailAddresses[0].emailAddress,
+			},
+			include: {
+				subscription: true
+			}
+		})
+
+		if (!existingUser) {
+			throw new Error("User not found.");
+		}
+
+		if (!existingUser.subscription) {
+			throw new Error("User has no active subscription.");
+		}
+
+		if (existingUser.subscription.stripeSubscriptionId !== subscriptionId) {
+			throw new Error("Subscription ID does not match.");
+		}
+
+		const subscription = await stripe.subscriptions.update(subscriptionId, {
+			pause_collection: {
+				behavior: 'keep_as_draft',
+				resumes_at: resumeAt.getTime()
+			}
+		})
+
+		console.log("[pauseSubscription] subscription: ", subscription);
+
+		return { success: true };
+	} catch (error) {
+		console.error("[pauseSubscription] Error: ", error);
+
+		return { success: false };
+	}
+} 
+
 /// ----------------------------------------- DATABASE ACTIONS -----------------------------------------
 
 export async function getSubscription() {
     try {
-        const user = await getCurrentUser();
+        const user = await currentUser();
 
-        if (!user) {
-            throw new Error("User not found or not logged in.");
-        }
+		if (!user) {
+			throw new Error("User not authenticated.");
+		}
 
-        const subscriptions = await prisma.subscription.findMany({
-            where: {
-                userId: user.id,
-            },
-        });
+		const existingUser = await prisma.user.findUnique({
+			where: {
+				email: user.emailAddresses[0].emailAddress,
+			},
+			include: {
+				subscription: true
+			}
+		})
 
-        return { subscription: subscriptions[0] };
+		if (!existingUser) {
+			throw new Error("User not found.");
+		}
+
+        return { subscription: existingUser.subscription };
     } catch (error) {
         console.error("[getSubscription] Error: ", error);
 

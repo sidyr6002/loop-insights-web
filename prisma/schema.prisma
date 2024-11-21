@@ -7,17 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum SubscriptionStatus {
-  ACTIVE
-  PAST_DUE
-  CANCELED
-  UNPAID
-  INCOMPLETE
-  INCOMPLETE_EXPIRED 
-  TRIALING
-  PAUSED
-}
-
 model User {
   id                String                  @id @default(uuid())
   name              String

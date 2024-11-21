@@ -2,14 +2,13 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import { addProject } from "@/app/actions/productActions";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-import { z } from "zod"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
+import { Project } from "@prisma/client";
 import { projectSchema } from "@/lib/schema";
 
-import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogContent,
@@ -27,43 +26,53 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Pencil } from "lucide-react";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { editProject } from "@/app/actions/projectActions";
 
+interface EditProjectProps {
+    project: Project;
+    setOptionsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-const CreateProjectButton = () => {
+const EditProject: React.FC<EditProjectProps> = ({ project, setOptionsOpen }) => {
     const router = useRouter();
-    const [dialogOpen, setDialogOpen] = React.useState(false);
-    const [creatingProject, setCreatingProject] = React.useState(false);
-    const queryClient = useQueryClient();
 
-    // console.log("User", user);
+    const [editingProject, setEditingProject] = React.useState(false);
+    const [editFormOpen, setEditFormOpen] = React.useState(false);
+
+    const queryClient = useQueryClient();
 
     const form = useForm<z.infer<typeof projectSchema>>({
         resolver: zodResolver(projectSchema),
         defaultValues: {
-            projectTitle: "",
-            projectURL: "",
-            projectDescription: "",
+            projectTitle: project.title,
+            projectURL: project.url,
+            projectDescription: project.description,
         },
     });
 
-    const addProjectMutation = useMutation({
-        mutationFn: addProject,
+    const editProjectMutation = useMutation({
+        mutationFn: editProject,
         onSuccess: (data) => {
-            //console.log("[CreateProjectButton] Success: ", data);
+            //console.log(data);
+
             queryClient.invalidateQueries({ queryKey: ["projects"], exact: true });
 
-            setCreatingProject(false);
-            setDialogOpen(false);
+            setEditingProject(false);
+            setEditFormOpen(false); 
+            setOptionsOpen(false);
         },
         onError: (error) => {
-            console.error("[CreateProjectButton] Error: ", error);
+            console.error("[EditProjectComponent] Error editing project:", error);
 
-            setCreatingProject(false);
+            setEditingProject(false);
         },
         onSettled: () => {
             form.reset();
@@ -72,30 +81,33 @@ const CreateProjectButton = () => {
     })
 
     const onSubmit = async (values: z.infer<typeof projectSchema>) => {
-        setCreatingProject(true);
-        addProjectMutation.mutate(values);
+        //console.log(values);
+        setEditingProject(true);
+        editProjectMutation.mutate({
+            projectId: project.id,
+            project: values
+        });   
     }
 
+
     return (
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-                <Button
-                    size="sm"
-                    className="p-2 sm:px-4 lg:px-5 lg:py-0 flex items-center rounded-full text-blue-600 bg-zinc-100 hover:bg-zinc-200 transition duration-150"
-                >
-                        <Plus style={{width: "1.2rem", height: "1.2rem"}} />
-                        <span className="hidden sm:block text-xs lg:text-sm font-medium">
-                            Project
-                        </span>
-                </Button>
+        <Dialog open={editFormOpen} onOpenChange={setEditFormOpen}>
+            <DialogTrigger className="w-full" asChild>
+                <DropdownMenuItem onClick={(e) => {
+                    e.preventDefault();
+                    setEditFormOpen(true);
+                }} className="cursor-pointer">
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Edit
+                </DropdownMenuItem>
             </DialogTrigger>
             <DialogContent className="bg-zinc-100 rounded-2xl sm:rounded-2xl">
                 <DialogHeader className="px-2 sm:px-0">
                     <DialogTitle className="text-neutral-800 text-xl md:text-2xl">
-                        Create Project
+                        Edit Project
                     </DialogTitle>
                     <DialogDescription className="text-xs md:text-sm">
-                        Fill in the form below to create a new project
+                        Edit the details of your project
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -165,13 +177,13 @@ const CreateProjectButton = () => {
                         <DialogFooter className="pt-4 lg:pt-2">
                             <Button
                                 type="submit"
-                                disabled={creatingProject}
+                                disabled={editingProject}
                                 className="rounded-full md:rounded-3xl bg-blue-600 hover:bg-blue-700"
                             >
-                                {creatingProject ? (
+                                {editingProject ? (
                                     <Loader2 style={{ width: "1rem", height: "1rem" }} className="mr-0 animate-spin" />
                                 ) : (
-                                    "Create"
+                                    "Update"
                                 )}
                             </Button>
                         </DialogFooter>
@@ -182,4 +194,4 @@ const CreateProjectButton = () => {
     );
 };
 
-export default CreateProjectButton;
+export default EditProject;

@@ -1,9 +1,12 @@
 "use client";
 
-import { downloadInvoice, getPaymentHistory } from "@/app/actions/paymentActions";
-import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { memo, useCallback } from "react";
+import { useAuth } from "@clerk/clerk-react";
+
 import Stripe from "stripe";
+import { getPaymentHistory } from "@/app/actions/paymentActions";
+import { useQuery } from "@tanstack/react-query";
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
     Table,
@@ -12,10 +15,16 @@ import {
     TableRow,
     TableCell,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import PaymentHistorySkelton from "@/components/payments/skeltons/payment-history-skelton";
+
+import dynamic from "next/dynamic";
+
+const InvoiceDownloadButton = dynamic(() => import("@/components/payments/invoice-download-button"), {
+    ssr: false,
+});
+
 import { formatAmount, formatDate } from "@/lib/utils";
-import { Button } from "../ui/button";
-import { ArrowDownToLine, Loader2 } from "lucide-react";
-import { useAuth } from "@clerk/clerk-react";
 
 interface PaymentHistoryProps {
     customerId: string;
@@ -25,60 +34,79 @@ const PaymentHistory: React.FC<PaymentHistoryProps> = ({
     customerId,
 }: PaymentHistoryProps) => {
     const { getToken} = useAuth();
-    const [downloadingInvoice, setDownloadingInvoice] = React.useState(false);
 
     const {
         data: invoicesData,
         isLoading,
         isError,
-    } = useQuery<Stripe.Invoice[] | null>({
+    } = useQuery<Stripe.Invoice[]>({
         queryKey: ["invoice", customerId],
         queryFn: async () => {
             const { invoices } = await getPaymentHistory({ customerId });
-            //console.log("[PaymentHistory] invoices: ", invoices);
+
+            if (!invoices) {
+                throw new Error("Invoices not found");
+            }
 
             return invoices;
         },
     });
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (!invoicesData || isError) {
-        return <div>Error</div>;
-    }
-
-    const handleInvoiceDownload = async (invoiceId: string) => {
-        setDownloadingInvoice(true);
+    const handleInvoiceDownload = useCallback(async (invoiceId: string) => {
         try {
             const token = await getToken();
-            
-            const responce = await fetch(`/api/download-invoice?invoiceId=${invoiceId}`, {
+            const response = await fetch(`/api/download-invoice?invoiceId=${invoiceId}`, {
                 method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
             });
 
-            if (!responce.ok) {
+            if (!response.ok) {
                 throw new Error("Failed to download invoice.");
             }
 
-            const blob = await responce.blob();
+            const blob = await response.blob();
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
             link.download = `invoice-${invoiceId}.pdf`;
             link.click();
         } catch (error) {
             console.error("[handleInvoiceDownload] Error: ", error);
-        } finally {
-            setDownloadingInvoice(false);
         }
-    };
+    }, [getToken]);
+
+    if (isLoading) {
+        return <PaymentHistorySkelton />;
+    }
+
+    if (!invoicesData || isError) {
+        return (
+            <Card className="w-full bg-red-50 border border-red-200 shadow-md rounded-2xl">
+                <CardHeader className="bg-red-200/40 backdrop-blur-2xl rounded-t-lg">
+                    <CardTitle className="text-red-800 font-bold text-xl">
+                        Something Went Wrong
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="px-0.5 py-4 sm:px-6 sm:py-6">
+                    <div className="text-center">
+                        <p className="text-gray-700 mb-4">
+                            We encountered an issue while fetching your payment
+                            history. Please try again later.
+                        </p>
+                        <Button
+                            className="bg-red-600 text-white hover:bg-red-700 rounded-lg"
+                        >
+                            Retry
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
 
     return (
-        <Card className="w-full bg-white shadow-md rounded-xl">
+        <Card className="w-full bg-white shadow-md rounded-2xl">
             <CardHeader className="bg-blue-300/20 backdrop-blur-2xl rounded-t-lg">
                 <CardTitle className="text-neutral-800 font-bold text-xl">
                     Payment History
@@ -136,26 +164,10 @@ const PaymentHistory: React.FC<PaymentHistoryProps> = ({
                                     {invoice.status}
                                 </TableCell>
                                 <TableCell className="p-3 text-gray-700 flex justify-end">
-                                    <Button
-                                        size="sm"
-                                        variant="outline"
-                                        className="bg-blue-600 text-zinc-50 hover:bg-blue-600/90 hover:text-zinc-50 rounded-3xl"
-                                        disabled={downloadingInvoice}
-                                        onClick={() =>
-                                            handleInvoiceDownload(invoice.id)
-                                        }
-                                    >
-                                        {downloadingInvoice ? (
-                                            <span>
-                                                <Loader2 className="h-4 w-4 animate-spin" />
-                                            </span>
-                                        ) : (
-                                            <span className="flex items-center gap-1">
-                                                <ArrowDownToLine size={16} />{" "}
-                                                Download
-                                            </span>
-                                        )}
-                                    </Button>
+                                    <InvoiceDownloadButton 
+                                        invoiceId={invoice.id} 
+                                        onDownload={handleInvoiceDownload} 
+                                    />
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -166,4 +178,4 @@ const PaymentHistory: React.FC<PaymentHistoryProps> = ({
     );
 };
 
-export default PaymentHistory;
+export default memo(PaymentHistory);

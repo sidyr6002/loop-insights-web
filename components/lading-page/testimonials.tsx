@@ -41,7 +41,7 @@ const testimonialList = [
 
 function Testimonials() {
   return (
-    <div className='w-full px-4 my-36 space-y-16'>
+    <section className='w-full px-4 my-36 space-y-16' id='testimonials'>
         <div className='text-center space-y-6'>
             <h3 className='text-md lg:text-lg xl:text-xl font-semibold text-gray-700'>Testimonials</h3>
             <h2 className='text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900'>What our clients say</h2>
@@ -76,7 +76,7 @@ function Testimonials() {
                 <CarouselNext />
             </Carousel>
         </div>
-    </div>
+    </section>
   )
 }
 

@@ -8,7 +8,6 @@ import {
 } from "@/components/ui/card";
 import { FaTimesCircle } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 const CancelPage = () => {
     return (
@@ -42,7 +41,7 @@ const CancelPage = () => {
                     Go to Dashboard
                 </Button>
                 <Button
-                    onClick={() => (window.location.href = "/pricing")} // Redirecting user to the pricing page to retry
+                    onClick={() => (window.location.href = "/subscriptions")} // Redirecting user to the pricing page to retry
                     className="w-full text-center bg-blue-600 text-white hover:bg-blue-700 transition duration-300"
                 >
                     Retry Payment

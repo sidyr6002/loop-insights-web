@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button } from '../ui/button'
+import Image from 'next/image'
 
 function Hero() {
   return (
@@ -21,8 +22,8 @@ function Hero() {
                 <Button className='rounded-full bg-gray-200 text-gray-800 hover:bg-gray-300 transition duration-300'>View on GitHub</Button>
             </div>
         </div>
-        <div className='hidden xl:block xl:col-span-3 bg-green-500'>
-            Col2
+        <div className='hidden xl:flex xl:col-span-3 justify-center items-center'>
+            <Image src="/images/feedback.png" width={400} height={400} alt="feedback" />
         </div>
     </div>
   )

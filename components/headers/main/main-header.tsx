@@ -3,7 +3,11 @@
 import React, { memo } from "react";
 import { UserButton, useSession } from "@clerk/nextjs";
 import { Skeleton } from "../../ui/skeleton";
-import { AlignJustify } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
+import MainMobileHeader from "./main-header-mobile";
+import Image from "next/image";
 
 const UserAuthSection = memo(({ isLoaded }: { isLoaded: boolean }) => {
     return (
@@ -25,29 +29,25 @@ const UserAuthSection = memo(({ isLoaded }: { isLoaded: boolean }) => {
 });
 
 const MainHeader: React.FC = () => {
+    const pathname = usePathname();
     const { isLoaded } = useSession();
 
-    const headerClasses =
-        "sticky top-0 z-50 lg:mx-9 lg:translate-y-5 transition-all duration-300";
-    const containerClasses =
-        "hidden lg:block w-full px-2.5 lg:px-9 py-0.5 rounded-full bg-neutral-400/40 text-zinc-900 backdrop-blur-sm backdrop-saturate-200";
-
     return (
-        <header className={headerClasses}>
-            <div className={containerClasses}>
+        <header className="sticky top-0 z-50 lg:mx-9 lg:translate-y-5 transition-all duration-300">
+            <div className="hidden lg:block px-2.5 lg:px-9 py-0.5 rounded-full bg-neutral-400/40 text-zinc-900 backdrop-blur-sm backdrop-saturate-200">
                 <div className="flex h-14 items-center justify-between">
-                    <h1 className="text-lg font-bold text-neutral-800 flex items-center">
-                        L<span>oo</span>p Insights
-                    </h1>
+                    <Image src="/images/logo.png" width={56} height={28} alt="logo" onClick={() => window.location.href = "/"} className="cursor-pointer"/>
+                    <div className="flex-grow">
+                        <div className="px-6 py-2 text-base text-neutral-700 flex justify-center items-center gap-16">
+                            <Link href="/dashboard" className={cn("hover:text-blue-700", pathname.includes("dashboard") && "text-blue-700")}>Dashboard</Link>
+                            <Link href="/subscriptions" className={cn("hover:text-blue-700", pathname.includes("subscription") && "text-blue-700")}>Subscription</Link>
+                        </div>
+                    </div>
                     <UserAuthSection isLoaded={isLoaded} />
                 </div>
             </div>
-            <div className="flex lg:hidden mx-2 mt-3 sm:mx-4 md:mx-6 px-4 sm:px-6 md:px-9 py-3 gap-4 rounded-full bg-zinc-300/90 backdrop-blur-sm relative">
-                <AlignJustify className="w-6 h-6 font-semibold" />
-                <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    Loop Insights
-                </h2>
-            </div>
+
+            <MainMobileHeader />
         </header>
     );
 };
