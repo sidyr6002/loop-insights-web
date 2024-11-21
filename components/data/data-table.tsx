@@ -119,7 +119,7 @@ const DataTable = <TData, TValue>({
         manualFiltering: true,
     });
 
-    console.log("[DataTable] isLoading: ", isLoading);
+    //console.log("[DataTable] isLoading: ", isLoading);
 
     return (
         <div className="px-2 sm:px-4">

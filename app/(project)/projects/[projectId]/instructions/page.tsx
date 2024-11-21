@@ -6,21 +6,30 @@ import { useParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import CopyButton from "@/components/copy-button";
 
-import { BookOpen, Code, Palette } from "lucide-react";
+import { BookOpen, ChevronLeft, Code, Palette } from "lucide-react";
+import Link from "next/link";
 
-const scripts = {
-    react: "<Feedback projectId={YOUR_PROJECT_ID} label={YOUR_LABEL} />",
-    hmtl: {
-        element: `<feedback-element project-id={YOUR_PROJECT_ID} label={YOUR_LABEL}></feedback-element>`,
+const buildScript = ({ projectId }: { projectId: string | string[] }) => {
+    return {
+        element: `<feedback-element project-id="${projectId}" label={YOUR_LABEL}></feedback-element>`,
         umd: `<script src="${process.env.NEXT_PUBLIC_FEEDBACK_URL}/feedback.umd.js"></script>`,
-    },
+    }
 }
 
 const ProjectInstructionsPage = () => {
     const { projectId } = useParams();
+    
+    if (!projectId) {
+        return <div>Project not found</div>
+    }
+
+    const script = buildScript({ projectId })
 
     return (
-        <div className="w-full my-16 max-w-6xl mx-auto px-2 sm:px-4 pb-8">
+        <div className="w-full my-8 max-w-6xl mx-auto px-2 sm:px-4 pb-8">
+            <div className="mb-8">
+                <Link href={`/projects/${projectId}`} className="flex items-center gap-1 text-blue-700"><ChevronLeft className="w-4 h-4" /> Back to Project</Link>
+            </div>
             {/* Title Section with gradient background */}
             <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-indigo-500 p-8 mb-8">
                 <div className="relative z-10">
@@ -70,33 +79,23 @@ const ProjectInstructionsPage = () => {
                             </div>
 
                             {/* Implementation Options */}
-                            <div className="grid md:grid-cols-2 gap-8">
+                            <div className="grid gap-8">
                                 {/* React/Next.js Option */}
-                                <div className="space-y-4 flex flex-col">
-                                    <h5 className="text-lg font-semibold text-gray-800">
-                                        For React or Next.js:
-                                    </h5>
-                                    <div className="flex-grow flex justify-between items-center gap-2 bg-gray-50 p-4 pr-3 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
-                                        <code className="inset-0 text-blue-600 font-mono text-sm">
-                                            {scripts.react}
-                                        </code>
-                                        <CopyButton text={scripts.react} />
-                                    </div>
-                                </div>
+                                
 
                                 {/* HTML/JS Option */}
                                 <div className="space-y-4 flex flex-col">
                                     <h5 className="text-lg font-semibold text-gray-800">
-                                        For HTML or JavaScript:
+                                        Add the following code to your HTML:
                                     </h5>
                                     <div className="flex-grow flex justify-between items-center gap-2 bg-gray-50 p-4 pr-3 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
                                         <code className=" text-blue-600 font-mono text-sm break-all">
-                                            {scripts.hmtl.element}
+                                            {script.element}
                                             <br />
-                                            {scripts.hmtl.umd}
+                                            {script.umd}
                                         </code>
                                         <CopyButton
-                                            text={scripts.hmtl.element + "\n" + scripts.hmtl.umd}
+                                            text={script.element + "\n" + script.umd}
                                         />
                                     </div>
                                 </div>

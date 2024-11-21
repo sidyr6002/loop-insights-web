@@ -1,25 +1,24 @@
 import { getSubscription } from '@/app/actions/subscriptionActions'
-import PaymentHistory from '@/components/subsciptions/payment-history';
-import SubscriptionDetails from '@/components/subsciptions/subscription-details';
-import React from 'react'
+
+import PricingSection from '@/components/lading-page/pricing';
+import PaymentsServerComponent from '@/components/payments/payment-server-component';
+import SubscriptionsServerComponent from '@/components/subsciptions/subscription-server-component';
 
 const Subscriptions = async () => {
     const { subscription } = await getSubscription();
 
     if (!subscription) {
         return (
-            <div className='w-full max-w-6xl flex-grow flex flex-col space-y-8 mx-auto sm:px-4'>
-                <h1 className='text-3xl font-bold'>No subscription found.</h1>
-            </div>
+            <PricingSection subscriptionPage/>
         )
     }
 
-    // console.log("[Subscriptions] subscription: ", subscription);
+    //console.log("[Subscriptions] subscription: ", subscription);
 
     return (
         <div className='w-full max-w-6xl flex-grow flex flex-col space-y-8 mx-auto sm:px-4'>
-            <SubscriptionDetails subscriptionId={subscription.stripeSubscriptionId} />
-            <PaymentHistory customerId={subscription.stripeCustomerId} />
+            <SubscriptionsServerComponent subscriptionId={subscription.stripeSubscriptionId} />
+            <PaymentsServerComponent customerId={subscription.stripeCustomerId} />
         </div>
     )
 }

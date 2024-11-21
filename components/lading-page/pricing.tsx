@@ -57,11 +57,12 @@ const plans = [
     },
 ];
 
-const PricingSection = async() => {
+const PricingSection = async({subscriptionPage = false}: {subscriptionPage?: boolean}) => {
     return (
-        <div className="my-36 space-y-16">
+        <section className={cn("my-36 space-y-16", subscriptionPage && "my-6")} id="pricing">
             <div className="text-center mb-16 space-y-6">
-                <h3 className="text-md lg:text-lg xl:text-xl font-semibold text-gray-700">
+                <h3 className={cn("hidden", subscriptionPage && "block text-md lg:text-lg xl:text-xl font-semibold text-gray-700")}>You are on free plan, upgrade to get more features</h3>
+                <h3 className={cn("text-md lg:text-lg xl:text-xl font-semibold text-gray-700", subscriptionPage && "hidden")}>
                     Pricing Plans
                 </h3>
                 <div className="flex flex-col items-center space-y-9">
@@ -117,12 +118,12 @@ const PricingSection = async() => {
                         </CardContent>
 
                         <CardFooter className="p-5 lg:p-6">
-                            <SubscriptionButton priceId={plan.priceId} />
+                            <SubscriptionButton priceId={plan.priceId} subscriptionPage={subscriptionPage}/>
                         </CardFooter>
                     </Card>
                 ))}
             </div>
-        </div>
+        </section>
     );
 };
 

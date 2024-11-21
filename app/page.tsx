@@ -1,13 +1,31 @@
-import { currentUser } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+"use client";
 
-async function Home() {
-    const user = await currentUser();
+import { useAuth } from "@clerk/clerk-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-    if (user) {
-        return redirect("/dashboard");
-    }
-    return redirect("/home");
+const HomePage = () => {
+    const router = useRouter()
+    const { isSignedIn } = useAuth();
+
+    console.log("[HomePage] isSignedIn: ", isSignedIn);
+
+    useEffect(() => {
+        const priceId = localStorage.getItem("priceId");
+
+        console.log("[HomePage] priceId: ", priceId);
+
+        if (priceId) {
+            localStorage.removeItem("priceId");
+            router.push(`/checkout?priceId=${priceId}`);
+        }
+
+        if (isSignedIn) {
+            router.push("/dashboard");
+        }
+    }, [isSignedIn]);
+
+    return router.push("/home");
 }
 
-export default Home;
+export default HomePage;

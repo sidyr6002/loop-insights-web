@@ -37,7 +37,7 @@ const featuresInfo = [
 
 function Features() {
   return (
-    <div className='w-full my-36 space-y-16'>
+    <section className='w-full my-36 space-y-16' id='features'>
         <div className='text-center space-y-6'>
             <h3 className='text-md lg:text-lg xl:text-xl font-semibold text-gray-700'>Features</h3>
             <div className='flex flex-col items-center space-y-9'>
@@ -56,7 +56,7 @@ function Features() {
                 </div>
             ))}
         </div>
-    </div>
+    </section>
   )
 }
 

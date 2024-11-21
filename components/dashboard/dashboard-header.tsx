@@ -1,6 +1,11 @@
 import React, { memo } from "react";
 import { PieChart } from "lucide-react";
-import CreateProjectButton from "./create-project";
+
+import dynamic from "next/dynamic";
+
+const CreateProjectButton = dynamic(() => import("@/components/dashboard/project/create-project"), {
+    ssr: false,  
+});
 
 const DashboardHeader = () => {
     return (

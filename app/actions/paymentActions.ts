@@ -16,7 +16,7 @@ interface GetPaymentHistoryProps {
 
 export async function getPaymentHistory({ customerId, limit = 10 } : GetPaymentHistoryProps) {
     try {
-        console.log("[getPaymentHistory] customerId: ", customerId);
+        //console.log("[getPaymentHistory] customerId: ", customerId);
 
         const user = await getCurrentUser();
 
@@ -42,7 +42,7 @@ export async function getPaymentHistory({ customerId, limit = 10 } : GetPaymentH
 
 export async function downloadInvoice({ invoiceId }: { invoiceId: string }) {
     try {
-        console.log("[downloadInvoice] invoiceId: ", invoiceId);
+        //console.log("[downloadInvoice] invoiceId: ", invoiceId);
 
         const user = await getCurrentUser();
 

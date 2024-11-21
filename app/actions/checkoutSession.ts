@@ -42,7 +42,7 @@ export async function createCheckoutSession({ priceId, token }: CheckoutSessionP
             metadata: { userId: existingUser.id },
         });
 
-        console.log("[createCheckoutSession] session: ", session);
+        //console.log("[createCheckoutSession] session: ", session);
 
         return {
             sessionId: session.id

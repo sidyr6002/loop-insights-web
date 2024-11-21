@@ -37,7 +37,7 @@ const ProjectFeedbacksPage: React.FC<ProjectFeedbacksPageProps> = async ({params
 
     return (
         <div className='w-full container mx-auto pt-4 flex-grow flex flex-col gap-4 overflow-auto'>
-            <ProjectHeader projectTitle={project.title} projectURL={project.url} />
+            <ProjectHeader projectTitle={project.title} projectId={project.id} projectURL={project.url} />
             <FeedbacksTable projectId={params.projectId}/>
         </div>
     )
