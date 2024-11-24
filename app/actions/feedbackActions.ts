@@ -43,7 +43,7 @@ const sortKeys = ["rating", "userEmail", "createdAt"]
 
 export const getFeedbacks = async ({ projectId, pagination, sorting, filters }: getFeedbacksParams) => {
     try {
-        console.log("[getFeedbacks] filters: ", filters);
+        //console.log("[getFeedbacks] filters: ", filters);
 
         const user = await getCurrentUser();
     
@@ -69,7 +69,7 @@ export const getFeedbacks = async ({ projectId, pagination, sorting, filters }: 
         const whereClause = buildWhereClause(projectId, filters ?? {});
         const orderByClause = { [sorting[0].id]: sorting[0].desc ? "desc" : "asc" }
 
-        console.log("[getFeedbacks] whereClause: ", whereClause);
+        //console.log("[getFeedbacks] whereClause: ", whereClause);
     
         const feedbacksAfterFilters: Feedback[] = await prisma.feedback.findMany({
             where: whereClause,
@@ -77,6 +77,8 @@ export const getFeedbacks = async ({ projectId, pagination, sorting, filters }: 
             skip: pagination.pageIndex * pagination.pageSize,
             take: pagination.pageSize,
         });
+
+        //console.log("[getFeedbacks] feedbacksAfterFilters: ", feedbacksAfterFilters);
     
         return feedbacksAfterFilters;       
     } catch (error) {

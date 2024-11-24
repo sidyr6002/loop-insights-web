@@ -1,221 +1,165 @@
-"use client";
-
-import {
-    startTransition,
-    useCallback,
-    useEffect,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
-import {
+import React, { startTransition, useCallback } from "react";
+import type {
     ColumnFiltersState,
+    OnChangeFn,
     PaginationState,
     SortingState,
 } from "@tanstack/react-table";
-import { Feedback, Project } from "@prisma/client";
-import { getFeedbacks, getPages } from "@/app/actions/feedbackActions";
-import lodash from "lodash";
-import qs from "qs";
-
-interface QueryState {
-    pagination: PaginationState;
-    sorting: SortingState;
-    filters: ColumnFiltersState;
-}
+import { useTableStore } from "@/stores/table-store";
+import { parseQueryState } from "@/lib/parseQueryState";
+import { useFeedbackTableQuery } from "./useFeedbackTableQuery";
+import { Project } from "@prisma/client";
 
 interface UseFeedbackTableProps {
     projectId: Project["id"];
     searchParams: URLSearchParams;
 }
 
-interface UseFeedbackTableReturn {
-    feedbackData: Feedback[];
-    pages: number;
-    isLoading: boolean;
-    paginationState: PaginationState;
-    sortingState: SortingState;
-    columnFilters: ColumnFiltersState;
-    handlePaginationChange: (newPagination: React.SetStateAction<PaginationState>) => void;
-    setSortingState: (newSorting: React.SetStateAction<SortingState>) => void;
-    setColumnFilters: (newFilters: React.SetStateAction<ColumnFiltersState>) => void;
-}
-
-const parseQueryState = (searchParams: URLSearchParams): QueryState => {
-    const parsed = qs.parse(searchParams.toString());
-
-    return {
-        pagination: {
-            pageIndex: Number(parsed.page || 1) - 1,
-            pageSize: Number(parsed.size || 10),
-        },
-        sorting: parsed.sort
-            ? [
-                  {
-                      id: parsed.sort as string,
-                      desc: parsed.order === "desc",
-                  },
-              ]
-            : [
-                  {
-                      id: "createdAt",
-                      desc: true,
-                  },
-              ],
-        filters: Object.entries(parsed).reduce((acc, [key, value]) => {
-            if (!["page", "size", "sort", "order"].includes(key)) {
-                acc.push({ id: key, value });
-            }
-            return acc;
-        }, [] as ColumnFiltersState),
-    };
-};
-
 export const useFeedbackTable = ({
     projectId,
     searchParams,
-}: UseFeedbackTableProps): UseFeedbackTableReturn => {
+}: UseFeedbackTableProps) => {
     const {
-        pagination: initialPagination,
-        sorting: initialSorting,
-        filters: initialFilters,
-    } = parseQueryState(searchParams);
+        pagination,
+        sorting,
+        filters,
+        preferredPageSize,
+        setPagination,
+        setSorting,
+        setFilters,
+        setPreferredPageSize,
+    } = useTableStore();
 
-    // Data state
-    const [feedbackData, setFeedbackData] = useState<Feedback[]>([]);
-    const [pages, setPages] = useState<number>(-1);
-    
-    // Loading state
-    const [isLoading, setIsLoading] = useState(false);
+    console.log(
+        "[useFeedbackTable] pagination: ",
+        pagination,
+    )
 
-    // Table state
-    const [paginationState, setPaginationState] = useState<PaginationState>(initialPagination);
-    const [sortingState, setSortingState] = useState<SortingState>(initialSorting);
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(initialFilters);
-    
-    // Reset state
-    const isMounted = useRef(false);
+    // Initialize from URL params
+    React.useEffect(() => {
+        const {
+            pagination: urlPagination,
+            sorting: urlSorting,
+            filters: urlFilters,
+        } = parseQueryState(searchParams);
 
-    // console.log("Filters: ", columnFilters);
+        const currentState = useTableStore.getState();
 
-    // Memoized debounced fetch function
-    const debouncedFetch = useCallback(
-        useMemo(
-            () =>
-                lodash.debounce((callback: () => Promise<void>) => {
-                    if (isMounted.current) {
-                        callback();
-                    }
-                }, 100),
-            []
-        ),
-        []
+        // Compare and update pagination if different
+        if (
+            urlPagination.pageIndex !== currentState.pagination.pageIndex ||
+            urlPagination.pageSize !== currentState.pagination.pageSize
+        ) {
+            setPagination(urlPagination);
+        }
+
+        // Compare and update sorting if different
+        if (JSON.stringify(urlSorting) !== JSON.stringify(currentState.sorting)) {
+            setSorting(urlSorting);
+        }
+
+        // Compare and update filters if different
+        if (JSON.stringify(urlFilters) !== JSON.stringify(currentState.filters)) {
+            setFilters(urlFilters);
+        }
+    }, [searchParams]);
+
+    // Convert filters to API format
+    const filterParams = React.useMemo(
+        () =>
+            Object.fromEntries(
+                filters.map((filter) => [filter.id, filter.value])
+            ),
+        [filters]
     );
 
-    // Fetch feedbacks
-    const fetchFeedbacks = useCallback(async () => {
-        setIsLoading(true);
-        try {
-            const filters = Object.fromEntries(
-                columnFilters.map((filter) => [filter.id, filter.value])
-            );
-
-            const feedbacks = await getFeedbacks({
-                projectId,
-                pagination: paginationState,
-                sorting: sortingState,
-                filters,
-            });
-
-            if (!feedbacks) {
-                throw new Error("Something went wrong in fetching feedbacks.");
-            }
-
-            startTransition(() => {
-                setFeedbackData(feedbacks);
-            });
-        } catch (error) {
-            console.error("[useFeedbackTable] Error: ", error);
-        } finally {
-            setIsLoading(false);
-        }
-    }, [projectId, paginationState, sortingState, columnFilters]);
-
-    // Fetch total pages
-    const fetchPages = useCallback(async () => {
-        try {
-            const filters = Object.fromEntries(
-                columnFilters.map((filter) => [filter.id, filter.value])
-            );
-
-            const totalPages = await getPages({
-                projectId,
-                pageSize: paginationState.pageSize,
-                filters,
-            });
-
-            if (totalPages === -1) {
-                throw new Error(
-                    "Something went wrong in fetching total pages."
-                );
-            }
-
-            startTransition(() => {
-                setPages(totalPages);
-            });
-        } catch (error) {
-            console.error(
-                "[useFeedbackTable] Error fetching total pages:",
-                error
-            );
-        }
-    }, [projectId, paginationState.pageSize, columnFilters]);
-
-    // Handle pagination changes
-    const handlePaginationChange = useCallback(
-        (newPagination: React.SetStateAction<PaginationState>) => {
-            setIsLoading(true);
-            setPaginationState(newPagination);
-        },
-        []
-    );
-
-    // Effects
-    useEffect(() => {
-        isMounted.current = true;
-        debouncedFetch(fetchFeedbacks);
-        return () => {
-            isMounted.current = false;
-            debouncedFetch.cancel();
-        };
-    }, [
-        paginationState,
-        sortingState,
-        columnFilters,
-        debouncedFetch,
-        fetchFeedbacks,
-    ]);
-
-    useEffect(() => {
-        fetchPages();
-    }, [projectId, paginationState.pageSize, columnFilters, fetchPages]);
-
-    useEffect(() => {
-        if ( Object.keys(columnFilters).length > 0 && paginationState.pageIndex > 0 ) {
-            setPaginationState((prev) => ({ ...prev, pageIndex: 0 }));
-        }
-    }, [columnFilters]);
-
-
-    return {
+    // Query data
+    const {
         feedbackData,
         pages,
         isLoading,
-        paginationState,
-        sortingState,
-        columnFilters,
+        isFetching,
+        error,
+        refetch,
+    } = useFeedbackTableQuery({
+        projectId,
+        pagination,
+        sorting,
+        filters: filterParams,
+    });
+
+    // Change handlers with proper types
+    const handlePaginationChange: OnChangeFn<PaginationState> = useCallback(
+        (updater) => {
+            startTransition(() => {
+                setPagination(
+                    typeof updater === "function" ? updater(pagination) : updater
+                );
+            });
+        },
+        [setPagination, pagination]
+    );
+
+    const handleSortingChange: OnChangeFn<SortingState> = useCallback(
+        (updater) => {
+            startTransition(() => {
+                setSorting(
+                    typeof updater === "function" ? updater(sorting) : updater
+                );
+            });
+        },
+        [setSorting, sorting]
+    );
+
+    const handleFiltersChange: OnChangeFn<ColumnFiltersState> = useCallback(
+        (updater) => {
+            startTransition(() => {
+                setFilters(
+                    typeof updater === "function" ? updater(filters) : updater
+                );
+            });
+        },
+        [setFilters, filters]
+    );
+
+    // URL sync effect
+    // React.useEffect(() => {
+    //     const queryString = qs.stringify({
+    //         page: pagination.pageIndex + 1,
+    //         size: pagination.pageSize,
+    //         sort: sorting[0]?.id,
+    //         order: sorting[0]?.desc ? "desc" : "asc",
+    //         ...filterParams,
+    //     });
+
+    //     window.history.replaceState(
+    //         {},
+    //         "",
+    //         `${window.location.pathname}?${queryString}`
+    //     );
+    // }, [pagination, sorting, filterParams]);
+
+	//console.log('[useFeedbackTable] feedbackData: ', feedbackData);
+
+    return {
+        // Data
+        feedbackData,
+        pages,
+        isLoading,
+        isFetching,
+        error,
+        refetch,
+
+        // State
+        pagination,
+        sorting,
+        columnFilters: filters,
+        preferredPageSize,
+
+        // Handlers
         handlePaginationChange,
-        setSortingState,
-        setColumnFilters,
+        handleSortingChange,
+        handleFiltersChange,
+        setPreferredPageSize,
     };
 };

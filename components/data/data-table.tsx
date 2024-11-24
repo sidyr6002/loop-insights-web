@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { memo } from "react";
+import { cn } from "@/lib/utils";
 
 import {
     ColumnDef,
@@ -25,49 +26,41 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
+import DataTablePagination from "@/components/data/data-table.pagination";
+import DataEmailSearch from "@/components/data/data-email-search";
+import DataVisibilityFilter from "@/components/data/data-visibiity-filter";
+import DataDateRangeFilter from "@/components/data/data-date-range-filter";
 
-import { Input } from "@/components/ui/input";
-import DataTablePagination from "./data-table.pagination";
-import { cn } from "@/lib/utils";
-import DataEmailSearch from "./data-email-search";
-import { Button } from "../ui/button";
-import { keyNameMap } from "../project/feedbacks/columns";
-import DataVisibilityFilter from "./data-visibiity-filter";
-import DataDateRangeFilter from "./data-date-range-filter";
 import { Loader2 } from "lucide-react";
 
 
-const LoadingOverlay = ({ visible }: { visible: boolean }) => {
+const LoadingOverlay = memo(({ visible }: { visible: boolean }) => {
     return (
-      <div 
-        className={cn(
-          "absolute inset-0 rounded-xl",
-          "flex items-center justify-center",
-          "transition-all duration-300 ease-in-out",
-          visible ? "opacity-100 z-50" : "opacity-0 -z-10",
-        )}
-      >
-        <div className={cn(
-          "flex items-center gap-3 px-5 py-4",
-          "bg-white rounded-lg shadow-lg",
-          "border border-gray-100",
-          "transform transition-all",
-          visible ? "scale-100" : "scale-95",
-        )}>
-          <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
-          <span className="text-sm font-medium text-gray-700">
-            Loading...
-          </span>
+        <div
+            className={cn(
+                "absolute inset-0 rounded-xl",
+                "flex items-center justify-center",
+                "transition-all duration-300 ease-in-out",
+                visible ? "opacity-100 z-50" : "opacity-0 -z-10"
+            )}
+        >
+            <div
+                className={cn(
+                    "flex items-center gap-3 px-5 py-4",
+                    "bg-white rounded-lg shadow-lg",
+                    "border border-gray-100",
+                    "transform transition-all",
+                    visible ? "scale-100" : "scale-95"
+                )}
+            >
+                <Loader2 className="h-5 w-5 animate-spin text-blue-600" />
+                <span className="text-sm font-medium text-gray-700">
+                    Loading...
+                </span>
+            </div>
         </div>
-      </div>
     );
-  };
+});
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
@@ -124,7 +117,7 @@ const DataTable = <TData, TValue>({
     return (
         <div className="px-2 sm:px-4">
             <div className="flex justify-end pb-4">
-                <DataDateRangeFilter column={table.getColumn("createdAt")} table={table} />
+                <DataDateRangeFilter column={table.getColumn("createdAt")} />
             </div>
             <div className="flex flex-col-reverse sm:flex-row gap-2 items-center pb-4">
                 <DataEmailSearch table={table} />

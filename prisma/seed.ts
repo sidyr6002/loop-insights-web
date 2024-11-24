@@ -4,7 +4,7 @@ import Chance from 'chance';
 const prisma = new PrismaClient();
 const chance = new Chance();
 
-const projectId = '7ad87ef0-c075-4480-a53e-875cb67f5044';
+const projectId = 'eb8546d2-7e57-4941-8626-b62a686cddaa';
 
 const generateFeedbackData = async () => {
   const feedbackData: Omit<Feedback, 'id'>[] = [];

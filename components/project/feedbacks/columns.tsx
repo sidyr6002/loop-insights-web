@@ -1,18 +1,8 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu"
-
 import { Feedback } from "@prisma/client"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowDown, ArrowUp, MoreHorizontal } from "lucide-react"
+import { ArrowDown, ArrowUp } from "lucide-react"
 
 
 export const keyNameMap: Record<string, string> = {

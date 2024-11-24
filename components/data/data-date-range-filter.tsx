@@ -12,11 +12,10 @@ import { Calendar } from 'lucide-react';
 
 interface DataDateRangeFilterProps<TData, TValue> {
     column: Column<TData, TValue> | undefined
-    table: Table<TData> 
 }
 
 
-const DataDateRangeFilter = <TData, TValue>({column, table}: DataDateRangeFilterProps<TData, TValue>) => {
+const DataDateRangeFilter = <TData, TValue>({column}: DataDateRangeFilterProps<TData, TValue>) => {
     const [startDate, setStartDate] = React.useState<Date | undefined>();
     const [endDate, setEndDate] = React.useState<Date | undefined>();
 
