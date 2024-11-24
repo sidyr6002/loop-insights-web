@@ -1,100 +1,129 @@
 "use cient";
 
-import React from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog'
-import { Button } from '../ui/button'
-import { pauseSubscription } from '@/app/actions/subscriptionActions'
-import { useRouter } from 'next/navigation'
-import Stripe from 'stripe';
-import { Pause, Play, UserRoundMinus } from 'lucide-react';
-import CancelSubscription from './cancel-subscription';
+import React, { useState } from "react";
+import Stripe from "stripe";
 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+
+import dynamic from "next/dynamic";
+import { cn } from "@/lib/utils";
+
+const CancelSubscription = dynamic(() => import("@/components/subsciptions/cancel-subscription"), {
+    ssr: false
+})
+const FreeTrailSubscription = dynamic(() => import("@/components/subsciptions/free-trail-subscription"), {
+    ssr: false
+})
+const UndoCancelSubscription = dynamic(() => import("@/components/subsciptions/undo-cancel-subscription"), {
+    ssr: false
+})
 
 interface ManageSubscriptionProps {
-    subscriptionId: string,
-    pauseCollectionData: Stripe.Subscription.PauseCollection | null
+    subscriptionId: string;
+    scheduledCancellation: boolean;
+    extendCount: number
 }
-const ManageSubscription: React.FC<ManageSubscriptionProps> = ({subscriptionId, pauseCollectionData}) => {
+const ManageSubscription: React.FC<ManageSubscriptionProps> = ({
+    subscriptionId,
+    scheduledCancellation,
+    extendCount
+}) => {
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const router = useRouter();
-    const [isCancelDialogOpen, setIsCancelDialogOpen] = React.useState(false);
+    //console.log("[ManageSubscription] pauseCollection: ", pauseCollection);
 
-    const handlePauseSubscription = async () => {
-        try {
-            const { success } = await pauseSubscription({subscriptionId, resumeAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)});
-
-            if (!success) {
-                throw new Error("Subscription not found");
-            }
-
-        } catch (error) {
-            console.error("[handlePauseSubscription] Error: ", error);
-        } finally {
-            router.refresh();
-        }
-    }
-
-    const handleResumeSubscription = () => {
-        console.log("Resume subscription");
-    }
-
-    const handleCancelSubscription = () => {
-        console.log("Cancel subscription");   
-    }
-
-
-  return (
-      <Dialog>
-          <DialogTrigger className="w-full sm:w-auto">
-              <Button className="w-full rounded-3xl">
-                  Manage Subscription
-              </Button>
-          </DialogTrigger>
-          <DialogContent className="rounded-2xl sm:rounded-2xl">
-              <DialogHeader className="py-4">
-                  <DialogTitle className="text-xl sm:text-2xl">
-                      Manage your subscription
-                  </DialogTitle>
-                  <DialogDescription>
-                      You can manage your subscription here.
-                  </DialogDescription>
-              </DialogHeader>
-              <div className="w-full flex flex-col gap-4">
-                  <div className="flex items-center justify-between">
-                    <div className='flex flex-col'>
-                        <h3 className="font-medium">Pause/Resume your subscription</h3>
-                        <p className='text-xs text-zinc-500'>If paused, it will resume in 7 days. (or) can be resumed at any time</p>
-                    </div>
-                      {pauseCollectionData ? (
-                          <Button
-                              className="rounded-full"
-                              onClick={handleResumeSubscription}
-                          >
-                                <Play className="mr-1 h-4 w-4" />
-                                Resume
-                          </Button>
-                      ) : (
-                        <Button
-                            className="rounded-full"
-                            onClick={handlePauseSubscription}
+    return (
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger className="w-full sm:w-auto" asChild>
+                <Button className="w-full rounded-3xl">
+                    Manage Subscription
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="rounded-2xl sm:rounded-2xl">
+                <DialogHeader className="py-4">
+                    <DialogTitle className="text-xl sm:text-2xl">
+                        Manage your subscription
+                    </DialogTitle>
+                    <DialogDescription>
+                        You can manage your subscription here.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="w-full flex flex-col gap-4">
+                    {scheduledCancellation ? (
+                        <>
+                            <div className="flex items-center justify-between">
+                                <div className="flex flex-col">
+                                    <h3 className="font-medium">
+                                        Undo cancellation
+                                    </h3>
+                                    <p className="text-xs text-zinc-500">
+                                        Your subscription is set to be{" "}
+                                        <span className="text-red-500">
+                                            cancelled
+                                        </span>
+                                        . You can still{" "}
+                                        <span className="text-green-500">
+                                            uncancel
+                                        </span>{" "}
+                                        it.
+                                    </p>
+                                </div>
+                                <UndoCancelSubscription
+                                    subscriptionId={subscriptionId}
+                                    setIsDialogOpen={setIsDialogOpen}
+                                />
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div
+                                className={cn(
+                                    "flex items-center justify-between gap-1",
+                                    extendCount > 0 && "hidden"
+                                )}
                             >
-                                <Pause className="mr-1 h-4 w-4" />
-                                Pause
-                        </Button>
-                      )}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium">Cancel your subscription</h3>
-                      <p className='text-xs text-zinc-500'>You can cancel your subscription at any time.</p>
-                    </div>
-                    <CancelSubscription isCancelDialogOpen={isCancelDialogOpen} setIsCancelDialogOpen={setIsCancelDialogOpen}/>
-                  </div>
-              </div>
-          </DialogContent>
+                                <div className="flex flex-col">
+                                    <h3 className="font-medium">
+                                        Use the free trial
+                                    </h3>
+                                    <p className="text-xs text-zinc-500">
+                                        You can enjoy a free trial for 7 days
+                                    </p>
+                                </div>
+                                <FreeTrailSubscription
+                                    subscriptionId={subscriptionId}
+                                    setIsDialogOpen={setIsDialogOpen}
+                                />
+                            </div>
+                            <div className="flex items-center justify-between gap-1">
+                                <div className="flex flex-col">
+                                    <h3 className="font-medium">
+                                        Cancel your subscription
+                                    </h3>
+                                    <p className="text-xs text-zinc-500">
+                                        You can cancel your subscription at any
+                                        time.
+                                    </p>
+                                </div>
+                                <CancelSubscription
+                                    subscriptionId={subscriptionId}
+                                    setIsDialogOpen={setIsDialogOpen}
+                                />
+                            </div>
+                        </>
+                    )}
+                </div>
+            </DialogContent>
+        </Dialog>
+    );
+};
 
-      </Dialog>
-  );
-}
-
-export default ManageSubscription
+export default ManageSubscription;

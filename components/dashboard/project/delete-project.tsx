@@ -56,9 +56,9 @@ const DeleteProject: React.FC<DeleteProjectProps> = ({ project, setOptionsOpen }
 
 	const handleDelete = () => {
 		setDeletingProject(true);
-		deleteProjectMutation.mutate(
-			project.id
-		);
+		deleteProjectMutation.mutate({
+			projectId: project.id
+		});
 	};
 
   return (

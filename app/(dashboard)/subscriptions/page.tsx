@@ -17,7 +17,7 @@ const Subscriptions = async () => {
 
     return (
         <div className='w-full max-w-6xl flex-grow flex flex-col space-y-8 mx-auto sm:px-4'>
-            <SubscriptionsServerComponent subscriptionId={subscription.stripeSubscriptionId} />
+            <SubscriptionsServerComponent subscriptionId={subscription.stripeSubscriptionId} extendCount={subscription.extendCount} />
             <PaymentsServerComponent customerId={subscription.stripeCustomerId} />
         </div>
     )

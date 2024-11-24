@@ -14,6 +14,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 const MAX_FREE_PROJECTS = 5;
+const activeSubscriptionOptions = ["active", "trialing"];
 
 export const getAllProjects = async () => {
     try {
@@ -42,7 +43,7 @@ export const getAllProjects = async () => {
             : null;
 
         const hasSubscription = stripeSubscription
-            ? stripeSubscription.status === "active" && !stripeSubscription.pause_collection
+            ? activeSubscriptionOptions.includes(stripeSubscription.status) && !stripeSubscription.pause_collection
             : false;
             
         const projects = await prisma.project.findMany({
@@ -90,7 +91,7 @@ export async function createProject(project: z.infer<typeof projectSchema>) {
             : null;
 
         const hasSubscription = stripeSubscription
-            ? stripeSubscription.status === "active" && !stripeSubscription.pause_collection
+            ? activeSubscriptionOptions.includes(stripeSubscription.status) && !stripeSubscription.pause_collection
             : false;
 
         const countProjects = await prisma.project.count({
@@ -171,7 +172,7 @@ export async function editProject({ projectId, project }: { projectId: string, p
     }
 }
 
-export async function deleteProject(projectId: string) {
+export async function deleteProject({ projectId }: { projectId: string }) {
     try {
         const user = await currentUser();
 

@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@/components/ui/toaster";
 
 function makeQueryClient() {
     return new QueryClient({
@@ -39,6 +40,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
                 afterSignOutUrl={`${process.env.NEXT_PUBLIC_BASE_URL}/home`}
             >
                 {children}
+                <Toaster />
                 {/* <ReactQueryDevtools initialIsOpen={false} /> */}
             </ClerkProvider>
         </QueryClientProvider>

@@ -8,8 +8,6 @@ const HomePage = () => {
     const router = useRouter()
     const { isSignedIn } = useAuth();
 
-    console.log("[HomePage] isSignedIn: ", isSignedIn);
-
     useEffect(() => {
         const priceId = localStorage.getItem("priceId");
 
@@ -20,12 +18,16 @@ const HomePage = () => {
             router.push(`/checkout?priceId=${priceId}`);
         }
 
+        console.log("[HomePage] isSignedIn: ", isSignedIn);
+
         if (isSignedIn) {
             router.push("/dashboard");
+        } else {
+            router.push("/home");
         }
     }, [isSignedIn]);
 
-    return router.push("/home");
+    return null;
 }
 
 export default HomePage;
