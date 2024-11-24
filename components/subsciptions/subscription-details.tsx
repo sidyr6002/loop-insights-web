@@ -53,8 +53,14 @@ const STATUS_CONFIGS: Record<string, any> = {
     }
 };
 
+const pauseCollectionTypes = [
+    "void",
+    "keep_as_draft",
+    "mark_uncollectible"
+]
+
 const getStatusConfig = (status: string, pauseCollection?: Stripe.Subscription.PauseCollection | null) => {
-    if (pauseCollection?.behavior === 'keep_as_draft') {
+    if (pauseCollection && pauseCollectionTypes.includes(pauseCollection.behavior)) {
         return {
             icon: Pause,
             className: "bg-blue-50 text-blue-700 border-blue-200",
@@ -71,7 +77,7 @@ const getStatusConfig = (status: string, pauseCollection?: Stripe.Subscription.P
     };
 };
 
-const SubscriptionDetails: React.FC<{ subscriptionId: string }> = ({ subscriptionId }) => {
+const SubscriptionDetails: React.FC<{ subscriptionId: string, extendCount: number }> = ({ subscriptionId, extendCount }) => {
     const { 
         data: subscriptionData, 
         isLoading, 
@@ -219,7 +225,8 @@ const SubscriptionDetails: React.FC<{ subscriptionId: string }> = ({ subscriptio
                 </Button>
                 <ManageSubscription 
                     subscriptionId={subscriptionId} 
-                    pauseCollectionData={subscriptionData.pause_collection}
+                    scheduledCancellation={subscriptionData.cancel_at_period_end}
+                    extendCount={extendCount}
                 />
             </CardFooter>
         </Card>

@@ -36,11 +36,11 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <Providers>
-                <body className={`${geistSans.variable} ${geistMono.variable} ${righteous.variable} antialiased min-h-svh bg-neutral-200`}>
-                    {children}
-                </body>
-            </Providers>
+            <body
+                className={`${geistSans.variable} ${geistMono.variable} ${righteous.variable} antialiased min-h-svh bg-neutral-200`}
+            >
+                <Providers>{children}</Providers>
+            </body>
         </html>
     );
 }

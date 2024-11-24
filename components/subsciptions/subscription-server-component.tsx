@@ -9,11 +9,12 @@ import SubscriptionDetails from "@/components/subsciptions/subscription-details"
 
 interface SubscriptionServerComponentProps {
     subscriptionId: string;
+    extendCount: number;
 }
 
 const SubscriptionsServerComponent: React.FC<
     SubscriptionServerComponentProps
-> = ({ subscriptionId }) => {
+> = ({ subscriptionId, extendCount }) => {
     const queryClient = new QueryClient();
 
     queryClient.prefetchQuery<Stripe.Subscription>({
@@ -22,16 +23,18 @@ const SubscriptionsServerComponent: React.FC<
             const { subscription } = await getStripeSubscriptionData({
                 subscriptionId,
             });
+
             if (!subscription) {
                 throw new Error("Subscription not found");
             }
+
             return subscription;
         },
     });
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <SubscriptionDetails subscriptionId={subscriptionId} />
+            <SubscriptionDetails subscriptionId={subscriptionId} extendCount={extendCount} />
         </HydrationBoundary>
     );
 };

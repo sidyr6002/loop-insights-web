@@ -1,5 +1,5 @@
 import Stripe from "stripe"; // Assuming you have this function defined in `utils`
-import { handleSubscriptionCreate } from "@/app/actions/subscriptionActions";
+import { handleSubscriptionCreate, handleSubscriptionDelete } from "@/app/actions/subscriptionActions";
 import { NextRequest, NextResponse } from "next/server";
 
 if (!process.env.STRIPE_SECRET_KEY) {
@@ -46,6 +46,9 @@ export async function POST(req: NextRequest) {
         switch (event.type) {
             case "checkout.session.completed":
                 await handleSubscriptionCreate(event);
+                break;
+            case "customer.subscription.deleted":
+                await handleSubscriptionDelete(event);
                 break;
             default:
                 console.log(`Unhandled event type ${event.type}`);
