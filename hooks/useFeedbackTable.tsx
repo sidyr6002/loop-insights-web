@@ -6,63 +6,26 @@ import type {
     SortingState,
 } from "@tanstack/react-table";
 import { useTableStore } from "@/stores/table-store";
-import { parseQueryState } from "@/lib/parseQueryState";
-import { useFeedbackTableQuery } from "./useFeedbackTableQuery";
+import { useFeedbackTableQuery } from "@/hooks/useFeedbackTableQuery";
 import { Project } from "@prisma/client";
+import { queryToTableState } from "@/lib/urlQueryState";
+import { isEqual } from "lodash";
 
 interface UseFeedbackTableProps {
     projectId: Project["id"];
-    searchParams: URLSearchParams;
 }
 
 export const useFeedbackTable = ({
     projectId,
-    searchParams,
 }: UseFeedbackTableProps) => {
     const {
         pagination,
         sorting,
         filters,
-        preferredPageSize,
         setPagination,
         setSorting,
         setFilters,
-        setPreferredPageSize,
     } = useTableStore();
-
-    console.log(
-        "[useFeedbackTable] pagination: ",
-        pagination,
-    )
-
-    // Initialize from URL params
-    React.useEffect(() => {
-        const {
-            pagination: urlPagination,
-            sorting: urlSorting,
-            filters: urlFilters,
-        } = parseQueryState(searchParams);
-
-        const currentState = useTableStore.getState();
-
-        // Compare and update pagination if different
-        if (
-            urlPagination.pageIndex !== currentState.pagination.pageIndex ||
-            urlPagination.pageSize !== currentState.pagination.pageSize
-        ) {
-            setPagination(urlPagination);
-        }
-
-        // Compare and update sorting if different
-        if (JSON.stringify(urlSorting) !== JSON.stringify(currentState.sorting)) {
-            setSorting(urlSorting);
-        }
-
-        // Compare and update filters if different
-        if (JSON.stringify(urlFilters) !== JSON.stringify(currentState.filters)) {
-            setFilters(urlFilters);
-        }
-    }, [searchParams]);
 
     // Convert filters to API format
     const filterParams = React.useMemo(
@@ -92,9 +55,8 @@ export const useFeedbackTable = ({
     const handlePaginationChange: OnChangeFn<PaginationState> = useCallback(
         (updater) => {
             startTransition(() => {
-                setPagination(
-                    typeof updater === "function" ? updater(pagination) : updater
-                );
+                const newPagination = typeof updater === "function" ? updater(pagination) : updater;
+                setPagination(newPagination);
             });
         },
         [setPagination, pagination]
@@ -103,9 +65,8 @@ export const useFeedbackTable = ({
     const handleSortingChange: OnChangeFn<SortingState> = useCallback(
         (updater) => {
             startTransition(() => {
-                setSorting(
-                    typeof updater === "function" ? updater(sorting) : updater
-                );
+                const newSorting = typeof updater === "function" ? updater(sorting) : updater;
+                setSorting(newSorting);
             });
         },
         [setSorting, sorting]
@@ -114,32 +75,12 @@ export const useFeedbackTable = ({
     const handleFiltersChange: OnChangeFn<ColumnFiltersState> = useCallback(
         (updater) => {
             startTransition(() => {
-                setFilters(
-                    typeof updater === "function" ? updater(filters) : updater
-                );
+                const newFilters = typeof updater === "function" ? updater(filters) : updater;
+                setFilters(newFilters);
             });
         },
         [setFilters, filters]
     );
-
-    // URL sync effect
-    // React.useEffect(() => {
-    //     const queryString = qs.stringify({
-    //         page: pagination.pageIndex + 1,
-    //         size: pagination.pageSize,
-    //         sort: sorting[0]?.id,
-    //         order: sorting[0]?.desc ? "desc" : "asc",
-    //         ...filterParams,
-    //     });
-
-    //     window.history.replaceState(
-    //         {},
-    //         "",
-    //         `${window.location.pathname}?${queryString}`
-    //     );
-    // }, [pagination, sorting, filterParams]);
-
-	//console.log('[useFeedbackTable] feedbackData: ', feedbackData);
 
     return {
         // Data
@@ -154,12 +95,10 @@ export const useFeedbackTable = ({
         pagination,
         sorting,
         columnFilters: filters,
-        preferredPageSize,
 
         // Handlers
         handlePaginationChange,
         handleSortingChange,
         handleFiltersChange,
-        setPreferredPageSize,
     };
 };

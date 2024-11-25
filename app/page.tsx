@@ -6,9 +6,11 @@ import { useEffect } from "react";
 
 const HomePage = () => {
     const router = useRouter()
-    const { isSignedIn } = useAuth();
+    const { isLoaded, isSignedIn } = useAuth();
 
     useEffect(() => {
+        if (!isLoaded) return;
+
         const priceId = localStorage.getItem("priceId");
 
         console.log("[HomePage] priceId: ", priceId);
@@ -25,7 +27,7 @@ const HomePage = () => {
         } else {
             router.push("/home");
         }
-    }, [isSignedIn]);
+    }, [isSignedIn, isLoaded, router]);
 
     return null;
 }
