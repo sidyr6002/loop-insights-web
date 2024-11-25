@@ -1,23 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { debounce } from 'lodash';
 
-/**
- * Custom hook to debounce a value.
- * @param value The value to debounce.
- * @param delay The debounce delay in milliseconds (default: 500ms).
- */
 const useDebounce = (value: string, delay: number = 500) => {
     const [debouncedValue, setDebouncedValue] = useState<string>(value);
 
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedValue(value);
-        }, delay);
+    const debouncedSetter = useMemo(
+        () =>
+            debounce((newValue: string) => {
+                setDebouncedValue(newValue);
+            }, delay),
+        [delay]
+    );
 
-        // Cleanup the timeout when value or delay changes
+    useEffect(() => {
+        debouncedSetter(value);
+        
         return () => {
-            clearTimeout(handler);
+            debouncedSetter.cancel();
         };
-    }, [value, delay]);
+    }, [value, debouncedSetter]);
 
     return debouncedValue;
 };

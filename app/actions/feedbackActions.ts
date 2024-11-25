@@ -2,8 +2,8 @@
 
 import getCurrentUser from "@/lib/currentUser";
 import prisma from "@/lib/prisma";
-import { Feedback, Project } from "@prisma/client";
-import { PaginationState, SortingState } from "@tanstack/react-table";
+import { FeedbackQueryParams, PagesQueryParams } from "@/lib/queryKeys";
+import { Feedback } from "@prisma/client";
 
 interface FilterOptions {
     userEmail?: string;
@@ -32,16 +32,9 @@ const buildWhereClause = (projectId: string, filters: FilterOptions) => {
     return whereClause;
 };
 
-interface getFeedbacksParams {
-    projectId: Project["id"];
-    pagination: PaginationState;
-    sorting: SortingState;
-    filters?: FilterOptions;
-}
-
 const sortKeys = ["rating", "userEmail", "createdAt"]
 
-export const getFeedbacks = async ({ projectId, pagination, sorting, filters }: getFeedbacksParams) => {
+export const getFeedbacks = async ({ projectId, pagination, sorting, filters }: FeedbackQueryParams) => {
     try {
         //console.log("[getFeedbacks] filters: ", filters);
 
@@ -88,13 +81,7 @@ export const getFeedbacks = async ({ projectId, pagination, sorting, filters }: 
     }
 };
 
-interface getPagesParams {
-    projectId: Project["id"];
-    pageSize: number;
-    filters?: FilterOptions;
-}
-
-export const getPages = async ({ projectId, pageSize = 10, filters }: getPagesParams) => {
+export const getPages = async ({ projectId, pageSize = 10, filters }: PagesQueryParams) => {
     try {
         const user = await getCurrentUser();
     
@@ -113,7 +100,7 @@ export const getPages = async ({ projectId, pageSize = 10, filters }: getPagesPa
             throw new Error("Project not found.");
         }
 
-        const whereClause = buildWhereClause(projectId, filters ?? {});
+        const whereClause = buildWhereClause(projectId, filters);
 
         const feedbackCount = await prisma.feedback.count({
             where: whereClause

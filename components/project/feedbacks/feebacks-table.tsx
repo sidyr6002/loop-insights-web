@@ -1,27 +1,20 @@
 "use client";
 
-// import { useSearchParams } from "next/navigation";
-import { use } from "react";
+import { memo } from "react";
 import { Project } from "@prisma/client";
 
 import { useFeedbackTable } from "@/hooks/useFeedbackTable";
 
 import DataTable from "@/components/data/data-table";
 import { feedbackColumns } from "@/components/project/feedbacks/columns";
+import { useTableUrlSync } from "@/hooks/useTableUrlSync";
 import { useSearchParams } from "next/navigation";
 
 interface FeedbackTableProps {
     projectId: Project["id"];
-    searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 const FeedbacksTable = ({ projectId }: FeedbackTableProps) => {
-    const searchParams = useSearchParams();
-    //const filters = searchParams; 
-    //const jsonFilters = filters ? JSON.parse(filters) : {}
-
-    //console.log("[FeedbacksTable] searchParams: ", searchParams);
-
     const {
         feedbackData,
         pages,
@@ -34,7 +27,6 @@ const FeedbacksTable = ({ projectId }: FeedbackTableProps) => {
         handleFiltersChange,
     } = useFeedbackTable({
         projectId,
-        searchParams,
     });
 
     return (
@@ -53,4 +45,4 @@ const FeedbacksTable = ({ projectId }: FeedbackTableProps) => {
     );
 };
 
-export default FeedbacksTable;
+export default memo(FeedbacksTable);
