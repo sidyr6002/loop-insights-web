@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { format } from "date-fns";
 import { Column, Table } from '@tanstack/react-table'
 
@@ -9,6 +9,7 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Button } from '@/components/ui/button';
 
 import { Calendar } from 'lucide-react';
+import { useTableStore } from '@/stores/table-store';
 
 interface DataDateRangeFilterProps<TData, TValue> {
     column: Column<TData, TValue> | undefined
@@ -16,10 +17,21 @@ interface DataDateRangeFilterProps<TData, TValue> {
 
 
 const DataDateRangeFilter = <TData, TValue>({column}: DataDateRangeFilterProps<TData, TValue>) => {
+    const {filters} = useTableStore();
     const [startDate, setStartDate] = React.useState<Date | undefined>();
     const [endDate, setEndDate] = React.useState<Date | undefined>();
 
     //console.log("[DataDateRangeFilter] column: ", column);
+
+    useEffect(() => { 
+            //console.log("[DataDateRangeFilter] filters: ", filters);
+            const dateFilter = filters.find(filter => filter.id === "createdAt");
+            if (dateFilter) {
+                const [startDate, endDate] = dateFilter.value as Date[];
+                setStartDate(startDate);
+                setEndDate(endDate);
+            }
+    }, [filters]);
 
     if (!column) {
         return null;
@@ -34,12 +46,12 @@ const DataDateRangeFilter = <TData, TValue>({column}: DataDateRangeFilterProps<T
 
         if (date) {
             const currentFilter = column.getFilterValue() as [Date?, Date?] || [undefined, undefined];
-            const newFilter: [Date?, Date?] = type === 'start' 
+            const newFilter = type === 'start' 
                 ? [date, currentFilter[1]]
                 : [currentFilter[0], date];
             
             column.setFilterValue(newFilter);
-            console.log("[DataDateRangeFilter] newFilter: ", newFilter);
+            //console.log("[DataDateRangeFilter] newFilter: ", newFilter);
         } else {
             const currentFilter = column.getFilterValue() as [Date?, Date?] || [undefined, undefined];
             const newFilter: [Date?, Date?] =
@@ -48,7 +60,7 @@ const DataDateRangeFilter = <TData, TValue>({column}: DataDateRangeFilterProps<T
                 : [currentFilter[0], undefined];
       
             column.setFilterValue(newFilter); // Remove the filter value for deselected date
-            console.log("[DataDateRangeFilter] clearedFilter: ", newFilter);
+            //console.log("[DataDateRangeFilter] clearedFilter: ", newFilter);
         }
     };
 

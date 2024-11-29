@@ -1,4 +1,4 @@
-import React, { startTransition, useCallback } from "react";
+import React, { startTransition, useCallback, useEffect, useState } from "react";
 import type {
     ColumnFiltersState,
     OnChangeFn,
@@ -8,7 +8,8 @@ import type {
 import { useTableStore } from "@/stores/table-store";
 import { useFeedbackTableQuery } from "@/hooks/useFeedbackTableQuery";
 import { Project } from "@prisma/client";
-import { queryToTableState } from "@/lib/urlQueryState";
+import { useRouter, useSearchParams } from "next/navigation";
+import { queryToTableState, UrlQueryState } from "@/lib/urlQueryState";
 import { isEqual } from "lodash";
 
 interface UseFeedbackTableProps {
@@ -17,15 +18,20 @@ interface UseFeedbackTableProps {
 
 export const useFeedbackTable = ({
     projectId,
+
 }: UseFeedbackTableProps) => {
-    const {
-        pagination,
-        sorting,
-        filters,
-        setPagination,
-        setSorting,
-        setFilters,
+    const { 
+        pagination, 
+        sorting, 
+        filters, 
+        setPagination, 
+        setSorting, 
+        setFilters 
     } = useTableStore();
+
+    //console.log("[useFeedbackTable] filters: ", filters);
+
+    const searchParams = useSearchParams();
 
     // Convert filters to API format
     const filterParams = React.useMemo(
@@ -36,7 +42,30 @@ export const useFeedbackTable = ({
         [filters]
     );
 
-    // Query data
+    useEffect(() => {
+        const {
+            pagination: urlQueryPagination,
+            sorting: urlQuerySorting,
+            filters: urlQueryFilters
+        } = queryToTableState(searchParams)
+
+        if (!isEqual(pagination, urlQueryPagination)) {
+            //console.log("[useFeedbackTable] urlQueryPagination: ", urlQueryPagination);
+            setPagination(urlQueryPagination);
+        }
+
+        if (!isEqual(sorting, urlQuerySorting)) {
+            //console.log("[useFeedbackTable] urlQuerySorting: ", urlQuerySorting);
+            setSorting(urlQuerySorting, false);
+        }
+
+        if (!isEqual(filters, urlQueryFilters)) {
+            //console.log("[useFeedbackTable] urlQueryFilters: ", urlQueryFilters);
+            setFilters(urlQueryFilters, false);
+        }
+    }, [searchParams,setPagination, setSorting, setFilters])
+
+    // // Query data
     const {
         feedbackData,
         pages,
@@ -47,7 +76,7 @@ export const useFeedbackTable = ({
     } = useFeedbackTableQuery({
         projectId,
         pagination,
-        sorting,
+        sorting: sorting,
         filters: filterParams,
     });
 
@@ -56,7 +85,10 @@ export const useFeedbackTable = ({
         (updater) => {
             startTransition(() => {
                 const newPagination = typeof updater === "function" ? updater(pagination) : updater;
-                setPagination(newPagination);
+                if(!isEqual(pagination, newPagination)) {
+                    //console.log("[handlePaginationChange] newPagination: ", newPagination);
+                    setPagination(newPagination);
+                }
             });
         },
         [setPagination, pagination]
@@ -66,7 +98,10 @@ export const useFeedbackTable = ({
         (updater) => {
             startTransition(() => {
                 const newSorting = typeof updater === "function" ? updater(sorting) : updater;
-                setSorting(newSorting);
+                if(!isEqual(sorting, newSorting)) {
+                    //console.log("[handleSortingChange] newSorting: ", newSorting);
+                    setSorting(newSorting);
+                }
             });
         },
         [setSorting, sorting]
@@ -76,7 +111,10 @@ export const useFeedbackTable = ({
         (updater) => {
             startTransition(() => {
                 const newFilters = typeof updater === "function" ? updater(filters) : updater;
-                setFilters(newFilters);
+                if (!isEqual(filters, newFilters)) {
+                    //console.log("[handleFiltersChange] newFilters: ", newFilters);
+                    setFilters(newFilters);
+                }
             });
         },
         [setFilters, filters]
