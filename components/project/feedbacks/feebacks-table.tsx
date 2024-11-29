@@ -7,8 +7,6 @@ import { useFeedbackTable } from "@/hooks/useFeedbackTable";
 
 import DataTable from "@/components/data/data-table";
 import { feedbackColumns } from "@/components/project/feedbacks/columns";
-import { useTableUrlSync } from "@/hooks/useTableUrlSync";
-import { useSearchParams } from "next/navigation";
 
 interface FeedbackTableProps {
     projectId: Project["id"];

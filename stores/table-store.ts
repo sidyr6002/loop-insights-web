@@ -4,6 +4,7 @@ import type {
     PaginationState,
     SortingState,
 } from "@tanstack/react-table";
+import { useTableUrlSync } from "@/hooks/useTableUrlSync";
 
 export const DEFAULT_STATE = {
     pagination: {
@@ -35,39 +36,57 @@ export const useTableStore = create<TableState>()((set, get) => ({
 
     setPagination: (pagination) => {
         const currentState = get();
-
-        set({
+        const updatedState = {
             ...currentState,
             pagination: {
                 pageIndex: pagination.pageIndex,
                 pageSize: pagination.pageSize,
             },
+        }
+
+        set(updatedState);
+        useTableUrlSync({
+            pagination: updatedState.pagination,
+            sorting: updatedState.sorting,
+            filters: updatedState.filters
         });
     },
 
     setSorting: (sorting, resetPage = true) => {
         const currentState = get();
-
-        set({
+        const updatedState = {
             ...currentState,
             sorting,
             pagination: {
                 ...currentState.pagination,
                 pageIndex: resetPage ? 0 : currentState.pagination.pageIndex,
             },
+        }
+
+        set(updatedState);
+        useTableUrlSync({
+            pagination: updatedState.pagination,
+            sorting: updatedState.sorting,
+            filters: updatedState.filters
         });
     },
 
     setFilters: (filters, resetPage = true) => {
         const currentState = get();
-
-        set({
+        const updatedState = {
             ...currentState,
             filters,
             pagination: {
                 ...currentState.pagination,
                 pageIndex: resetPage ? 0 : currentState.pagination.pageIndex,
             },
+        }
+
+        set(updatedState);
+        useTableUrlSync({
+            pagination: updatedState.pagination,
+            sorting: updatedState.sorting,
+            filters: updatedState.filters
         });
     },
 
