@@ -63,6 +63,48 @@ export const getAllProjects = async () => {
     }
 };
 
+export const getProject = async (projectId: string) => {
+    try {
+        const user = await currentUser();
+
+        if (!user) {
+            throw new Error("User not authenticated.");
+        }
+
+        const existingUser = await prisma.user.findUnique({
+            where: {
+                email: user.emailAddresses[0].emailAddress,
+            },
+            include: {
+                projects: true
+            }
+        });
+
+        if (!existingUser) {
+            throw new Error("User not found.");
+        }
+
+        if (!existingUser.projects.find((project) => project.id === projectId)) {
+            throw new Error("Project not found.");
+        }
+
+        const project = await prisma.project.findUnique({
+            where: {
+                id: projectId,
+            },
+        }); 
+
+        return {
+            project
+        };
+    } catch (error) {
+        console.error("[getProject] Error: ", error);
+        return {
+            project: null
+        };
+    }
+}
+
 export async function createProject(project: z.infer<typeof projectSchema>) {
     const { projectTitle, projectURL, projectDescription } = project;
 

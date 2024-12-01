@@ -2,14 +2,14 @@ import { Table } from "@tanstack/react-table";
 import React, { useEffect } from "react";
 import { Input } from "../ui/input";
 import useDebounce from "@/hooks/debounce";
-import { useTableStore } from "@/stores/table-store";
+import { useTableStore } from "@/providers/table-store-provider";
 
 interface DataEmailSearchProps<TData> {
     table: Table<TData>;
 }
 
 const DataEmailSearch = <TData,>({ table }: DataEmailSearchProps<TData>) => {
-    const { filters } = useTableStore();
+    const { filters } = useTableStore((state) => state);
     const [emailSearch, setEmailSearch] = React.useState<string>("");
 
     const debouncedEmailFilter = useDebounce(emailSearch, 500);
