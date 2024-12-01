@@ -1,16 +1,16 @@
-import React, { startTransition, useCallback, useEffect, useState } from "react";
+import React, { startTransition, useCallback, useEffect } from "react";
 import type {
     ColumnFiltersState,
     OnChangeFn,
     PaginationState,
     SortingState,
 } from "@tanstack/react-table";
-import { useTableStore } from "@/stores/table-store";
 import { useFeedbackTableQuery } from "@/hooks/useFeedbackTableQuery";
 import { Project } from "@prisma/client";
-import { useRouter, useSearchParams } from "next/navigation";
-import { queryToTableState, UrlQueryState } from "@/lib/urlQueryState";
+import { useSearchParams } from "next/navigation";
+import { queryToTableState } from "@/lib/urlQueryState";
 import { isEqual } from "lodash";
+import { useTableStore } from "@/providers/table-store-provider";
 
 interface UseFeedbackTableProps {
     projectId: Project["id"];
@@ -26,8 +26,8 @@ export const useFeedbackTable = ({
         filters, 
         setPagination, 
         setSorting, 
-        setFilters 
-    } = useTableStore();
+        setFilters
+    } = useTableStore((state) => state);
 
     //console.log("[useFeedbackTable] filters: ", filters);
 

@@ -63,7 +63,7 @@ export const queryToTableState = (
 
     //console.log("[getQueryState] queryState: ", queryState);
 
-    return queryState;
+    return JSON.parse(JSON.stringify(queryState));
 };
 
 export const tableStateToQuery = (state: UrlQueryState) => {

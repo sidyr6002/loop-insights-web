@@ -1,11 +1,20 @@
 import { getFeedbacks, getPages } from "@/app/actions/feedbackActions";
-import { FeedbackQueryParams, queryKeys } from "@/lib/queryKeys";
-import { Feedback } from "@prisma/client";
+import { queryKeys } from "@/lib/queryKeys";
+import { Feedback, Project } from "@prisma/client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { PaginationState, SortingState } from "@tanstack/react-table";
 import React from "react";
 
+
+interface QueryParams {
+    projectId: Project["id"];
+    pagination: PaginationState;
+    sorting: SortingState;
+    filters: Record<string, unknown>;
+}
+
 const getFeedbacksWithFallback = async (
-    params: FeedbackQueryParams
+    params: QueryParams
 ): Promise<Feedback[]> => {
     try {
         const response = await getFeedbacks(params);
@@ -26,10 +35,9 @@ const getFeedbacksWithFallback = async (
     }
 };
 
-export const useFeedbackTableQuery = (params: FeedbackQueryParams) => {
-    const queryClient = useQueryClient();
 
-    //console.log("[useFeedbackTableQuery] params: ", params);
+export const useFeedbackTableQuery = (params: QueryParams) => {
+    const queryClient = useQueryClient();
 
     // Main data query
     const {
@@ -53,13 +61,25 @@ export const useFeedbackTableQuery = (params: FeedbackQueryParams) => {
             pageSize: params.pagination.pageSize,
             filters: params.filters,
         }),
-        queryFn: () =>
-            getPages({
-                projectId: params.projectId,
-                pageSize: params.pagination.pageSize,
-                filters: params.filters,
-            }),
+        queryFn: async () => {
+            try {
+                const { pages } = await getPages({
+                    projectId: params.projectId,
+                    pageSize: params.pagination.pageSize,
+                    filters: params.filters,
+                });
+
+                return pages;
+            } catch (error) {
+                console.error("[useFeedbackTableQuery] Error fetching pages:", error);
+
+                return -1;
+            }
+        },
         staleTime: 30_000,
+        retry: 2,
+        refetchOnMount: true,
+        enabled: !isLoading,
     });
 
     // Prefetch next page
@@ -79,6 +99,7 @@ export const useFeedbackTableQuery = (params: FeedbackQueryParams) => {
             });
         }
     }, [params, pages, queryClient]);
+
 
     return {
         feedbackData,

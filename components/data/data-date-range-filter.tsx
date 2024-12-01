@@ -9,7 +9,7 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Button } from '@/components/ui/button';
 
 import { Calendar } from 'lucide-react';
-import { useTableStore } from '@/stores/table-store';
+import { useTableStore } from '@/providers/table-store-provider';
 
 interface DataDateRangeFilterProps<TData, TValue> {
     column: Column<TData, TValue> | undefined
@@ -17,7 +17,7 @@ interface DataDateRangeFilterProps<TData, TValue> {
 
 
 const DataDateRangeFilter = <TData, TValue>({column}: DataDateRangeFilterProps<TData, TValue>) => {
-    const {filters} = useTableStore();
+    const {filters} = useTableStore((state) => state);
     const [startDate, setStartDate] = React.useState<Date | undefined>();
     const [endDate, setEndDate] = React.useState<Date | undefined>();
 

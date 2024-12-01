@@ -4,6 +4,7 @@ import getCurrentUser from "@/lib/currentUser";
 import prisma from "@/lib/prisma";
 import { FeedbackQueryParams, PagesQueryParams } from "@/lib/queryKeys";
 import { Feedback } from "@prisma/client";
+import { pages } from "next/dist/build/templates/app-page";
 
 interface FilterOptions {
     userEmail?: string;
@@ -81,7 +82,10 @@ export const getFeedbacks = async ({ projectId, pagination, sorting, filters }: 
     }
 };
 
-export const getPages = async ({ projectId, pageSize = 10, filters }: PagesQueryParams) => {
+export const getPages = async ({ projectId, pageSize = 10, filters }: PagesQueryParams): Promise<{ pages: number }> => {
+    // console.log("pages for project: ", projectId);
+    // console.log("[getPages] filters: ", filters);
+
     try {
         const user = await getCurrentUser();
     
@@ -106,9 +110,13 @@ export const getPages = async ({ projectId, pageSize = 10, filters }: PagesQuery
             where: whereClause
         });
 
-        return Math.ceil(feedbackCount / pageSize);
+        return JSON.parse(JSON.stringify( {
+            pages: Math.ceil(feedbackCount / pageSize) as number,
+        }));
     } catch (error) {
         console.error("[getPages] Error: ", error);
-        return -1;
+        return {
+            pages: -1 as number
+        };
     }
 };
