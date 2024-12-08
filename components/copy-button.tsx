@@ -1,5 +1,5 @@
 import React from 'react'
-import { Clipboard, Copy } from 'lucide-react'
+import { Copy } from 'lucide-react'
 
 const CopyButton = ({text} : { text: string }) => {
 

@@ -2,7 +2,7 @@
 import React from 'react'
 
 import { Button } from "@/components/ui/button";
-import { RowData, Table } from '@tanstack/react-table';
+import { Table } from '@tanstack/react-table';
 
 interface DataTablePaginationProps<TData> {
     table:  Table<TData>

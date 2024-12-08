@@ -60,7 +60,7 @@ const EditProject: React.FC<EditProjectProps> = ({ project, setOptionsOpen }) =>
 
     const editProjectMutation = useMutation({
         mutationFn: editProject,
-        onSuccess: (data) => {
+        onSuccess: () => {
             //console.log(data);
 
             queryClient.invalidateQueries({ queryKey: ["projects"], exact: true });

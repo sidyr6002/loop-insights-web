@@ -6,10 +6,9 @@ import {
     QueryClient,
     QueryClientProvider,
 } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+// import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/toaster";
-import { TableStoreProvider } from "@/providers/table-store-provider";
 
 function makeQueryClient() {
     return new QueryClient({

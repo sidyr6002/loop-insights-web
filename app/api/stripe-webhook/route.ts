@@ -8,9 +8,7 @@ if (!process.env.STRIPE_SECRET_KEY) {
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-export const config = { api: { bodyParser: false } };
-
-export async function GET(req: NextRequest) {
+export async function GET() {
     return NextResponse.json({ message: "Hello, Next.js!" });
 }
 
@@ -30,7 +28,7 @@ export async function POST(req: NextRequest) {
             throw new Error("Missing Stripe Webhook Secret");
         }
 
-        event = stripe.webhooks.constructEvent(
+        event = await stripe.webhooks.constructEventAsync(
             buf,
             signature,
             process.env.STRIPE_WEBHOOK_SECRET

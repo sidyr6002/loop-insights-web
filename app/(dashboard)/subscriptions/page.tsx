@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic' 
+
 import { getSubscription } from '@/app/actions/subscriptionActions'
 
 import PricingSection from '@/components/lading-page/pricing';
