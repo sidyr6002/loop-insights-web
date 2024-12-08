@@ -12,10 +12,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 interface CheckoutSessionProps {
     priceId: string
-    token: string
 }
 
-export async function createCheckoutSession({ priceId, token }: CheckoutSessionProps) {
+export async function createCheckoutSession({ priceId }: CheckoutSessionProps) {
     try {
         const user = await currentUser();
 

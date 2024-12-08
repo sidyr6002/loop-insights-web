@@ -66,9 +66,19 @@ export const queryToTableState = (
     return JSON.parse(JSON.stringify(queryState));
 };
 
+interface QueryParams {
+    page?: number;
+    size?: number;
+    sort?: string;
+    order?: string;
+    startDate?: Date;
+    endDate?: Date;
+    [key: string]: string | number | Date | object | undefined;
+}
+
 export const tableStateToQuery = (state: UrlQueryState) => {
     //console.log("[tableStateToQuery] state: ", state);
-    const queryParams: Record<string, any> = {
+    const queryParams: QueryParams = {
         page: state.pagination.pageIndex + 1,
         size: state.pagination.pageSize,
     };
@@ -79,7 +89,7 @@ export const tableStateToQuery = (state: UrlQueryState) => {
     }
 
     state.filters.forEach((filter) => {
-        if (filter.value !== undefined && filter.value !== "") {
+        if (filter.value !== undefined && filter.value !== "" && filter.value !== null) {
             if (filter.id === "createdAt") {
                 //console.log("[tableStateToQuery] createdAt: ", filter.value);
                 const [startDate, endDate] = filter.value as Date[];

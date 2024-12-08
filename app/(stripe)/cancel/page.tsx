@@ -27,7 +27,7 @@ const CancelPage = () => {
                 <div className="text-center">
                     <p className="text-base lg:text-lg font-semibold text-red-600">
                         Your subscription was not processed successfully. If you
-                        need assistance, don't hesitate to reach out to our
+                        need assistance, don&apos;t hesitate to reach out to our
                         support team.
                     </p>
                 </div>

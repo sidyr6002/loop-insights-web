@@ -8,7 +8,6 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { MoreVertical } from "lucide-react";
 
 import EditProject from "@/components/dashboard/project/edit-project";
@@ -24,14 +23,8 @@ const ProjectControlOptions: React.FC<ProjectOptionsProps> = ({ project }) => {
     return (
         <div className="absolute top-2 right-2 z-10">
             <DropdownMenu open={optionsOpen} onOpenChange={setOptionsOpen}>
-                <DropdownMenuTrigger>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0 hover:text-blue-600"
-                    >
+                <DropdownMenuTrigger className="h-6 w-6 p-0 hover:text-blue-600">
                         <MoreVertical className="h-4 w-4" />
-                    </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[160px]">
                     <EditProject

@@ -1,11 +1,9 @@
 // 'use client';
 
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { getProject } from '@/app/actions/projectActions'
 import FeedbacksTable from '@/components/project/feedbacks/feebacks-table'
 import ProjectHeader from '@/components/project/project-header'
-import prisma from '@/lib/prisma'
-import { Project } from '@prisma/client';
 import { TableStoreProvider } from '@/providers/table-store-provider';
 
 interface ProjectFeedbacksPageParams {

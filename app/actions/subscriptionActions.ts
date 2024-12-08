@@ -5,7 +5,6 @@ import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { Subscription } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { Stripe } from "stripe";
 
 if (!process.env.STRIPE_SECRET_KEY) {

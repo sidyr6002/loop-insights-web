@@ -1,5 +1,6 @@
 import React from 'react'
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '../ui/carousel';
+import Image from 'next/image';
 
 const testimonialList = [
     {
@@ -59,7 +60,7 @@ function Testimonials() {
                             <div className='flex flex-col items-start space-y-6'>
                                 <div className='grid grid-cols-4 gap-6'>
                                     <div className='col-span-1'>
-                                        <img src={item.img} alt={`User-${item.name}`} className='w-12 h-12 object-cover rounded-full shadow-md shadow-zinc-800/60'/>
+                                        <Image src={item.img} alt={`User-${item.name}`} className='w-12 h-12 object-cover rounded-full shadow-md shadow-zinc-800/60'/>
                                     </div>
                                     <div className='col-span-3'>
                                         <h4 className='text-lg font-bold text-gray-900'>{item.name}</h4>

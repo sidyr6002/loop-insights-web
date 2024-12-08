@@ -1,10 +1,8 @@
 "use server";
 
-import getCurrentUser from "@/lib/currentUser";
 import prisma from "@/lib/prisma";
 import { projectSchema } from "@/lib/schema";
 import { currentUser } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { z } from "zod";
 

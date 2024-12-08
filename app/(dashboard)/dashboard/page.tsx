@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import DashboardHeader from "@/components/dashboard/dashboard-header";
 import ProjectsServerComponent from "@/components/dashboard/projects-server-component";
 

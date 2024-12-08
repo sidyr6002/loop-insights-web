@@ -67,12 +67,12 @@ const PricingSection = async({subscriptionPage = false}: {subscriptionPage?: boo
                 </h3>
                 <div className="flex flex-col items-center space-y-9">
                     <h2 className="text-2xl lg:text-3xl xl:text-4xl font-bold text-gray-900">
-                        Invest in a plan that's as ambitious as your corporate
+                        Invest in a plan that&apos;s as ambitious as your corporate
                         goals.
                     </h2>
                     <p className="text-sm lg:text-md xl:text-lg max-w-3xl text-gray-600">
                         Compare the benefits and features of each plan below to
-                        find the ideal match for your business's budget and
+                        find the ideal match for your business&apos;s budget and
                         ambitions.
                     </p>
                 </div>

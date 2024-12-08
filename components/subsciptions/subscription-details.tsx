@@ -30,8 +30,14 @@ import {
     Pause,
 } from "lucide-react";
 
+type StatusConfig = {
+    icon: React.ComponentType; 
+    className: string;
+    text?: string;  
+};
+
 // Move status configuration logic out of render
-const STATUS_CONFIGS: Record<string, any> = {
+const STATUS_CONFIGS: Record<string, StatusConfig> = {
     active: {
         icon: CheckCircle2,
         className: "bg-emerald-50 text-emerald-700 border-emerald-200",

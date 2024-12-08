@@ -28,6 +28,8 @@ const UserAuthSection = memo(({ isLoaded }: { isLoaded: boolean }) => {
     );
 });
 
+UserAuthSection.displayName = "UserAuthSection";
+
 const MainHeader: React.FC = () => {
     const pathname = usePathname();
     const { isLoaded } = useSession();

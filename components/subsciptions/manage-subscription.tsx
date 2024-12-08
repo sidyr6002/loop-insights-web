@@ -1,7 +1,6 @@
 "use cient";
 
 import React, { useState } from "react";
-import Stripe from "stripe";
 
 import {
     Dialog,

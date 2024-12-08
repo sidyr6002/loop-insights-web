@@ -1,7 +1,6 @@
-// app/success/page.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FaCheckCircle } from "react-icons/fa";
 import { Button } from "@/components/ui/button"; // ShadCN UI Button Component
@@ -19,7 +18,7 @@ interface StripeSession {
     subscription: string;
 }
 
-const SuccessPage = () => {
+const SuccessPageContent = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -106,6 +105,23 @@ const SuccessPage = () => {
                 </Button>
             </CardFooter>
         </Card>
+    );
+};
+
+const SuccessPage = () => {
+    return (
+        <Suspense
+            fallback={
+                <div className="text-center text-xl">
+                    <Loader2
+                        strokeWidth={1}
+                        className="animate-spin w-24 h-24 text-gray-400/70"
+                    />
+                </div>
+            }
+        >
+            <SuccessPageContent />
+        </Suspense>
     );
 };
 

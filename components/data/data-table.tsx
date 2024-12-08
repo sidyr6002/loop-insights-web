@@ -34,7 +34,7 @@ import DataDateRangeFilter from "@/components/data/data-date-range-filter";
 import { Loader2 } from "lucide-react";
 
 
-const LoadingOverlay = memo(({ visible }: { visible: boolean }) => {
+const LoadingOverlay: React.FC<{ visible: boolean }> = memo(({ visible }: { visible: boolean }) => {
     return (
         <div
             className={cn(
@@ -61,6 +61,8 @@ const LoadingOverlay = memo(({ visible }: { visible: boolean }) => {
         </div>
     );
 });
+
+LoadingOverlay.displayName = "LoadingOverlay";
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];

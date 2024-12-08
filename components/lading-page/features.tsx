@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaBolt, FaChartBar, FaChartLine, FaPalette, FaStopwatch, FaTools } from 'react-icons/fa'
+import { FaBolt, FaChartBar, FaChartLine, FaStopwatch, FaTools } from 'react-icons/fa'
 import { FaGears } from 'react-icons/fa6'
 
 const featuresInfo = [

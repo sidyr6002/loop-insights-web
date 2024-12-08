@@ -4,15 +4,26 @@ import getCurrentUser from "@/lib/currentUser";
 import prisma from "@/lib/prisma";
 import { FeedbackQueryParams, PagesQueryParams } from "@/lib/queryKeys";
 import { Feedback } from "@prisma/client";
-import { pages } from "next/dist/build/templates/app-page";
 
 interface FilterOptions {
     userEmail?: string;
     createdAt?: Array<Date>;
 }
 
+interface WhereClause {
+    projectId: string;
+    userEmail?: {
+        contains: string;
+        mode: "insensitive";
+    };
+    createdAt?: {
+        gte?: Date;
+        lte?: Date;
+    };
+}
+
 const buildWhereClause = (projectId: string, filters: FilterOptions) => {
-    const whereClause: Record<string, any> = { projectId };
+    const whereClause: WhereClause = { projectId };
 
     // Email filter: case-insensitive search
     if (filters.userEmail) {

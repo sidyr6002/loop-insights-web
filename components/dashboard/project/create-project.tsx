@@ -53,7 +53,7 @@ const CreateProjectButton = () => {
 
     const addProjectMutation = useMutation({
         mutationFn: createProject,
-        onSuccess: (data) => {
+        onSuccess: () => {
             //console.log("[CreateProjectButton] Success: ", data);
             queryClient.invalidateQueries({ queryKey: ["projects"], exact: true });
 

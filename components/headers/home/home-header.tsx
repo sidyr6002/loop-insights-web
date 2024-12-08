@@ -4,11 +4,10 @@ import React, { memo, useEffect, useMemo, useState } from "react";
 import { SignInButton, UserButton, useSession } from "@clerk/nextjs";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { AlignJustify, LogIn } from "lucide-react";
+import { LogIn } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import HomeMobileHeader from "./home-header-mobile";
 
 // Custom hook for scroll handling with throttle
@@ -29,13 +28,13 @@ const useScrollPosition = () => {
     return isScrolled;
 };
 
-const UserAuthSection = memo(
+const UserAuthSection: React.FC<{
+    isLoaded: boolean;
+    isSignedIn: boolean | undefined;
+}> = memo(
     ({
         isLoaded,
         isSignedIn,
-    }: {
-        isLoaded: boolean;
-        isSignedIn: boolean | undefined;
     }) => {
         if (!isLoaded) {
             return <Skeleton className="w-8 h-8 rounded-full" />;
@@ -63,19 +62,20 @@ const UserAuthSection = memo(
     }
 );
 
-const MobileHeader = memo(() => (
-    <div className="flex lg:hidden mx-2 mt-3 sm:mx-4 md:mx-6 px-4 sm:px-6 md:px-9 py-3 gap-4 rounded-full bg-zinc-300/90 backdrop-blur-sm relative">
-        <AlignJustify className="w-6 h-6 font-semibold" />
-        <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            Loop Insights
-        </h2>
-    </div>
-));
+UserAuthSection.displayName = "UserAuthSection";
+
+// const MobileHeader = memo(() => (
+//     <div className="flex lg:hidden mx-2 mt-3 sm:mx-4 md:mx-6 px-4 sm:px-6 md:px-9 py-3 gap-4 rounded-full bg-zinc-300/90 backdrop-blur-sm relative">
+//         <AlignJustify className="w-6 h-6 font-semibold" />
+//         <h2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+//             Loop Insights
+//         </h2>
+//     </div>
+// ));
 
 const HomeHeader: React.FC = () => {
     const { isLoaded, isSignedIn } = useSession();
     const isScrolled = useScrollPosition();
-    const pathname = usePathname();
 
     const headerClasses = useMemo(
         () =>

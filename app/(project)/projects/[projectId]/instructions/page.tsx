@@ -114,7 +114,7 @@ const ProjectInstructionsPage = () => {
                             </div>
                             <div className="bg-blue-50 p-6 rounded-lg">
                                 <p className="text-gray-700">
-                                    Once you've added the code, the feedback
+                                    Once you&apos;ve added the code, the feedback
                                     form will automatically be integrated into
                                     your project. You can customize the
                                     appearance and behavior by adjusting the
@@ -127,10 +127,10 @@ const ProjectInstructionsPage = () => {
                         {/* Final Section */}
                         <div className="bg-gradient-to-r from-green-50 to-blue-50 p-8 rounded-xl">
                             <h5 className="text-xl font-bold text-gray-900 mb-4">
-                                That's It! 🎉
+                                That&apos;s It! 🎉
                             </h5>
                             <p className="text-gray-700">
-                                You're all set to start collecting valuable
+                                You&apos;re all set to start collecting valuable
                                 feedback from your users. If you need additional
                                 customization options or encounter any issues,
                                 please refer to our documentation or contact our

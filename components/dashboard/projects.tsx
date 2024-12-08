@@ -16,13 +16,8 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Lock, MoreVertical } from "lucide-react";
-
-import dynamic from "next/dynamic";
-
-const ProjectControlOptions = dynamic(() => import("@/components/dashboard/project/project-control-options"), {
-    ssr: false,
-});
+import { Lock } from "lucide-react";
+import ProjectControlOptions from "./project/project-control-options";
 
 const Projects = () => {
     const router = useRouter();

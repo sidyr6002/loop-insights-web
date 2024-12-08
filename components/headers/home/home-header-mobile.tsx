@@ -1,22 +1,21 @@
 "use client";
 
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useState } from "react";
 import { AlignJustify, LogIn, X } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { SignInButton, UserButton, useSession } from "@clerk/nextjs";
 import { Skeleton } from "../../ui/skeleton";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
-const UserAuthSection = memo(
+const UserAuthSection: React.FC<{
+    isLoaded: boolean;
+    isSignedIn: boolean | undefined;
+}> = memo(
     ({
         isLoaded,
         isSignedIn,
-    }: {
-        isLoaded: boolean;
-        isSignedIn: boolean | undefined;
     }) => {
         if (!isLoaded) {
             return <Skeleton className="w-8 h-8 rounded-full" />;
@@ -44,8 +43,9 @@ const UserAuthSection = memo(
     }
 );
 
+UserAuthSection.displayName = "UserAuthSection";
+
 const HomeMobileHeader: React.FC = () => {
-    const pathname = usePathname();
     const { isLoaded, isSignedIn } = useSession();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 

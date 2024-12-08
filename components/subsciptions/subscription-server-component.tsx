@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { getStripeSubscriptionData } from "@/app/actions/subscriptionActions";
 import {
     dehydrate,

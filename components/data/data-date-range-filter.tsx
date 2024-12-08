@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { format } from "date-fns";
-import { Column, Table } from '@tanstack/react-table'
+import { Column } from '@tanstack/react-table'
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";

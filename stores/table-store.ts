@@ -50,7 +50,7 @@ export const createTableStore = (initialState: TableState = DEFAULT_STATE) => {
         ...initialState,
     
         setPagination: (pagination) => {
-            console.log("[setPagination] pagination: ", pagination);
+            //console.log("[setPagination] pagination: ", pagination);
             const currentState = get();
             const updatedState = {
                 ...currentState,
