@@ -2,6 +2,8 @@ import prisma from "@/lib/prisma";
 import { Feedback } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     return Response.json({ message: "Hello, Next.js!" });
 }
@@ -11,6 +13,10 @@ export async function POST(request: NextRequest) {
         await request.json();
 
     console.log(userName, userEmail, rating, feedback, projectId);
+
+    if (!userName || !userEmail || !rating || !feedback || !projectId) {
+        return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
 
     try {
         const validProjectId = await prisma.project.findUnique({
@@ -33,10 +39,10 @@ export async function POST(request: NextRequest) {
             },
         });
 
-        return new NextResponse(JSON.stringify(newFeedback), { status: 201 });
+        return NextResponse.json(newFeedback, { status: 201 });
     } catch (error) {
         console.error("[POST /api/feedback] Error creating feedback:", error);
 
-        return new NextResponse( JSON.stringify({ error: "Failed to create feedback" }), { status: 500 });
+        return NextResponse.json({ error: "Failed to create feedback" }, { status: 500 });
     }
 }
