@@ -9,6 +9,12 @@ import CopyButton from "@/components/copy-button";
 import { BookOpen, ChevronLeft, Code, Palette } from "lucide-react";
 import Link from "next/link";
 
+if (!process.env.NEXT_PUBLIC_FEEDBACK_URL) {
+    throw new Error("Missing NEXT_PUBLIC_FEEDBACK_URL");
+}
+
+console.log("[ProjectInstructionsPage] NEXT_PUBLIC_FEEDBACK_URL: ", process.env.NEXT_PUBLIC_FEEDBACK_URL);
+
 const buildScript = ({ projectId }: { projectId: string | string[] }) => {
     return {
         element: `<feedback-element project-id="${projectId}" label={YOUR_LABEL}></feedback-element>`,
