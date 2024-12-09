@@ -15,11 +15,10 @@ export default clerkMiddleware(async (auth, req) => {
     const res = NextResponse.next();
 
     // Add CORS headers to the response (applied to all requests)
-    if (req.url.includes("/api") || req.url.includes("/subscriptions")) {
-        res.headers.set("Access-Control-Allow-Origin", "*");
-        res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-    }  
+    res.headers.set("Access-Control-Allow-Origin", "*");
+    res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    
 
     // If the request method is OPTIONS, respond with a 200 OK to handle preflight requests
     if (req.method === "OPTIONS") {
