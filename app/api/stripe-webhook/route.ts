@@ -13,8 +13,8 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-    const buf = Buffer.from(await req.arrayBuffer());
-    const signature = req.headers.get("stripe-signature") as string;
+    const buf = await req.text();
+    const signature =  req.headers.get("stripe-signature") as string;
 
     console.log("[POST /api/stripe-webhook] signature: ", signature);
 
